@@ -1,0 +1,112 @@
+<div class="historia-page-container">
+  <!-- Top Navigation & Title Bar -->
+  <div class="historia-header-top">
+    <a routerLink="/kairo" class="medieval-btn btn-back">
+      <span class="btn-icon">🏰</span> Retornar à Taverna
+    </a>
+    <div class="header-title-wrapper">
+      <span class="header-subtitle">Crônicas de Kairo</span>
+      <h1>História do Eladrin</h1>
+    </div>
+    <div class="season-indicator-badge theme-color-text">
+      Estação Predominante: <strong>{{ currentCapitulo.estacao | titlecase }}</strong>
+    </div>
+  </div>
+
+  <!-- The Magic Scroll / Parchment -->
+  <div class="dnd-parchment-frame scroll-animate-in">
+    <div class="dnd-inner-border"></div>
+
+    <!-- Chapter Stepper (Wax Seals / Runes) -->
+    <div class="chapter-stepper-container">
+      <div class="stepper-line"></div>
+      <div class="stepper-steps">
+        <button 
+          *ngFor="let cap of capitulos; let i = index" 
+          class="step-node" 
+          [class.active]="currentStep === i"
+          [class.visited]="currentStep > i"
+          [attr.aria-label]="cap.subtitulo"
+          (click)="goToStep(i)"
+        >
+          <div class="step-seal">
+            <span class="step-number">{{ cap.numero }}</span>
+          </div>
+          <span class="step-label">{{ cap.subtitulo }}</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Scroll Content Area -->
+    <div class="parchment-content-wrapper">
+      <!-- Decorative Header Ornament -->
+      <div class="scroll-ornament scroll-ornament-top">
+        <span class="ornament-symbol">⚜</span>
+      </div>
+
+      <!-- Active Chapter Heading -->
+      <div class="chapter-heading">
+        <span class="chapter-meta">{{ currentCapitulo.titulo | uppercase }}</span>
+        <h2 class="chapter-title">{{ currentCapitulo.subtitulo }}</h2>
+        <div class="chapter-divider">
+          <span class="divider-dot">✦</span>
+          <span class="divider-line"></span>
+          <span class="divider-dot">✦</span>
+        </div>
+      </div>
+
+      <!-- Story Text Body -->
+      <div class="chapter-body-text" [ngClass]="'fade-in-content active-step-' + currentStep">
+        <p 
+          *ngFor="let para of currentCapitulo.paragrafos; let first = first" 
+          [class.first-paragraph]="first"
+          [innerHTML]="para"
+        ></p>
+      </div>
+
+      <!-- Decorative Footer Ornament -->
+      <div class="scroll-ornament scroll-ornament-bottom">
+        <span class="ornament-symbol">❦</span>
+      </div>
+    </div>
+
+    <!-- Page Footer Controls -->
+    <div class="parchment-footer">
+      <button 
+        class="nav-btn prev-btn" 
+        [disabled]="currentStep === 0" 
+        (click)="prevStep()"
+      >
+        <span class="arrow">◀</span> Cap. Anterior
+      </button>
+
+      <div class="page-number-display">
+        Página <span>{{ currentStep + 1 }}</span> de {{ capitulos.length }}
+      </div>
+
+      <button 
+        class="nav-btn next-btn" 
+        [disabled]="currentStep === capitulos.length - 1" 
+        (click)="nextStep()"
+      >
+        Próximo Cap. <span class="arrow">▶</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Final Path Button -->
+  <div class="bottom-action-container" *ngIf="currentStep === capitulos.length - 1">
+    <div class="character-ready-msg">
+      <h3>Kairo está pronto para sua jornada...</h3>
+      <p>Agora que você conhece o passado, explore as habilidades e a ficha do Eladrin do Tomo.</p>
+    </div>
+    <div class="action-buttons">
+      <a routerLink="/kairo/ficha" class="medieval-btn btn-cta">
+        <span>📜</span> Ver Ficha de Personagem
+      </a>
+      <a routerLink="/kairo/raca" class="medieval-btn btn-cta">
+        <span>🍃</span> Ver Traços Raciais
+      </a>
+    </div>
+  </div>
+</div>

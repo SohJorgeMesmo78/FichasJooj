@@ -1,0 +1,375 @@
+<div class="dnd-page-container">
+  <!-- Top Navigation & Title Bar -->
+  <header class="ficha-header-top">
+    <div class="header-left">
+      <a routerLink="/kosj" class="btn-back">⬅ Retornar</a>
+      <div class="char-titles">
+        <h1>{{ pj.nome }}</h1>
+        <span>{{ pj.raca }} • {{ pj.classe }} Nv {{ pj.nivel }} • {{ pj.antecedente }}</span>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="unit-toggle-btn" (click)="toggleUnit()">
+        <span [class.active]="!useMetric">Imperial</span>
+        <span class="divider">|</span>
+        <span [class.active]="useMetric">Métrica</span>
+      </button>
+      <button class="medieval-btn btn-short" (click)="descansoCurto()">Descanso Curto</button>
+      <button class="medieval-btn btn-long" (click)="descansoLongo()">Descanso Longo</button>
+    </div>
+  </header>
+
+  <div class="dnd-parchment-frame" [class.astral-mode]="pj.estados.bracosAstrais">
+    <div class="dnd-inner-border"></div>
+    <div class="corner-decoration"></div>
+    <div class="corner-decoration"></div>
+
+    <!-- LAYOUT PRINCIPAL D&D -->
+    <div class="dnd-layout">
+      
+      <!-- COLUNA 1: ATRIBUTOS (Esquerda) -->
+      <div class="col-atributos">
+        <div class="proficiency-box">
+          <span class="attr-name">Bônus</span>
+          <span class="attr-mod">{{ proficiencia >= 0 ? '+' : '' }}{{ proficiencia }}</span>
+          <div class="attr-score">Prof.</div>
+        </div>
+        
+        <div class="atributo-box" *ngFor="let attr of pj.atributos">
+          <span class="attr-name">{{ attr.name.substring(0, 3).toUpperCase() }}</span>
+          <span class="attr-mod">{{ getModifierString(attr.score) }}</span>
+          <div class="attr-score">{{ attr.score }}</div>
+        </div>
+      </div>
+
+      <!-- COLUNA 2: COMBATE & HP (Centro) -->
+      <div class="col-combate-hp">
+        <!-- Escudos de Combate -->
+        <div class="escudos-combate">
+          <div class="shield-box">
+            <span class="label">CA</span>
+            <span class="value">{{ ca }}</span>
+          </div>
+          <div class="shield-box">
+            <span class="label">Iniciativa</span>
+            <span class="value">{{ iniciativa }}</span>
+          </div>
+          <div class="shield-box">
+            <span class="label">Desloc.</span>
+            <span class="value">{{ deslocamento }}</span>
+          </div>
+          <div class="shield-box">
+            <span class="label">Percept. Passiva</span>
+            <span class="value">{{ percepcaoPassiva }}</span>
+          </div>
+        </div>
+
+        <!-- PAINEL DE VIDA -->
+        <div class="hp-panel">
+          <div class="hp-display">
+            <div class="hp-numbers">
+              <span class="current">{{ hp_atual + pj.vida_temporaria }}</span>
+              <span class="max">/ {{ hpMax }}</span>
+              <span class="temp" *ngIf="pj.vida_temporaria > 0">(+{{ pj.vida_temporaria }} Temp)</span>
+            </div>
+            <span class="hp-label">Pontos de Vida</span>
+          </div>
+
+          <div class="hp-controls">
+            <input type="number" class="hp-input" [(ngModel)]="hpModInput" min="0" placeholder="0">
+            <div class="hp-buttons">
+              <button class="btn-dano" (click)="processarDano()">Dano</button>
+              <button class="btn-cura" (click)="processarCura()">Cura</button>
+            </div>
+          </div>
+
+          <div class="hp-footer">
+            <div class="hit-dice">
+              <span class="label">Dados de Vida</span>
+              <span class="value">{{ pj.dados_vida_atual }} / {{ dadosVidaMax }} (d8)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- COLUNA 3: ABAS (Direita/Larga) -->
+      <div class="col-abas">
+        <div class="tabs-header">
+          <button class="tab-btn" [class.active]="activeTab === 'ficha'" (click)="setTab('ficha')">Ficha</button>
+          <button class="tab-btn" [class.active]="activeTab === 'combate'" (click)="setTab('combate')">Combate & Ki</button>
+          <button class="tab-btn" [class.active]="activeTab === 'tracos'" (click)="setTab('tracos')">Traços & Detalhes</button>
+        </div>
+
+        <div class="tab-content">
+          
+          <!-- ================= ABA: FICHA ================= -->
+          <div *ngIf="activeTab === 'ficha'" class="aba-ficha">
+            <div class="pericias-proficiencias-grid">
+              
+              <div class="left-column">
+                <div class="dark-panel mb-3">
+                  <h3>Inspiração</h3>
+                  <div class="outras-prof">
+                    <p><strong>Inspiração (D&D 5e):</strong> {{ pj.inspiracao > 0 ? 'Possui (' + pj.inspiracao + ')' : 'Não possui' }}</p>
+                    <div style="display: flex; gap: 8px; align-items: center; margin-top: 8px;">
+                      <label style="font-size: 0.85rem; color: var(--text-muted);">Ajustar:</label>
+                      <input type="number" [(ngModel)]="pj.inspiracao" min="0" style="width: 60px; background: rgba(0,0,0,0.3); border: 1px solid var(--border-gold); color: #fff; padding: 2px 6px; border-radius: 4px; font-size: 0.85rem; text-align: center;">
+                    </div>
+                  </div>
+                </div>
+
+                <div class="pericias-box dark-panel">
+                  <h3>Perícias</h3>
+                  <ul class="pericias-list">
+                    <li *ngFor="let skill of pj.pericias" [class.proficiente]="skill.treinado || skill.maestria">
+                      <span class="pericia-bola">{{ skill.maestria ? '★' : skill.treinado ? '●' : '○' }}</span>
+                      <span class="pericia-bonus">{{ getSkillTotal(skill) }}</span>
+                      <span class="pericia-nome">{{ skill.name }} <small>({{ skill.attr.substring(0,3) }})</small></span>
+                    </li>
+                  </ul>
+                  <div class="skills-legend" style="margin-top: 10px; padding-top: 8px; border-top: 1px dashed rgba(255,255,255,0.1); display: flex; gap: 12px; font-size: 0.7rem; color: var(--text-muted); justify-content: center;">
+                    <span>○ Livre</span>
+                    <span>● Proficiente</span>
+                    <span>★ Maestria</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="right-column">
+                <div class="dark-panel">
+                  <h3>Inventário & Moedas</h3>
+                  <div class="dinheiro mb-3" style="font-size: 0.9rem; padding: 8px; background: rgba(0,0,0,0.3); border-radius: 6px; border: 1px solid var(--border-gold); display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;">
+                    <span style="color: #ffcc00; font-weight: bold;">{{ pj.moedas.po }} PO</span>
+                    <span style="color: #c0c0c0; font-weight: bold;">{{ pj.moedas.pp }} PP</span>
+                    <span style="color: #b87333; font-weight: bold;">{{ pj.moedas.pc }} PC</span>
+                  </div>
+                  <div class="inventario-items-list" style="display: flex; flex-direction: column; gap: 6px;">
+                    <div *ngFor="let eq of pj.equipamentos" class="inventario-item-card clickable-item" (click)="openModal(eq)" style="background: rgba(0,0,0,0.2); padding: 8px 12px; border-radius: 6px; border: 1px solid transparent; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: 0.2s;">
+                      <span class="item-card-name" style="font-weight: bold;">{{ eq.name }}</span>
+                      <span class="item-card-qty" *ngIf="eq.value" style="font-size: 0.85rem; opacity: 0.7;">{{ eq.value }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- ================= ABA: COMBATE ================= -->
+          <div *ngIf="activeTab === 'combate'" class="aba-combate">
+            <div class="combate-grid">
+              
+              <div class="ataques dark-panel">
+                <h3>Ataques Rápidos</h3>
+                <table class="tabela-ataques" style="width: 100%; border-collapse: collapse; text-align: left; margin-bottom: 1.5rem;">
+                  <thead>
+                    <tr>
+                      <th style="color: var(--text-muted); font-weight: normal; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.5rem;">Nome</th>
+                      <th style="color: var(--text-muted); font-weight: normal; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.5rem;">Bônus</th>
+                      <th style="color: var(--text-muted); font-weight: normal; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.5rem;">Dano</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="clickable-item" (click)="openModal({name: pj.features[1].name, description: pj.features[1].description})" style="cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.05);">
+                      <td style="padding: 8px 0; font-weight: bold;">Artes Marciais</td>
+                      <td style="padding: 8px 0; color: var(--primary-color);">+{{ pj.estados.bracosAstrais ? (modSAB + proficiencia) : (modDES + proficiencia) }}</td>
+                      <td style="padding: 8px 0;">1{{ artesMarciaisDie }}{{ formatMod(pj.estados.bracosAstrais ? modSAB : modDES) }}</td>
+                    </tr>
+                    <tr class="clickable-item" (click)="openModal({name: 'Mordida', description: 'Ataque natural de Povo Lagarto.'})" style="cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.05);">
+                      <td style="padding: 8px 0; font-weight: bold;">Mordida</td>
+                      <td style="padding: 8px 0; color: var(--primary-color);">+{{ modFOR + proficiencia }}</td>
+                      <td style="padding: 8px 0;">1d6{{ formatMod(modFOR) }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+
+                <h3>Guia de Ações</h3>
+                <div class="action-category" *ngFor="let type of ['A', 'BA', 'R', 'P']">
+                  <label class="category-label" [attr.data-action]="type" style="display: block; font-weight: bold; margin: 12px 0 6px; font-size: 0.85rem; border-left: 3px solid var(--primary-color); padding-left: 6px; text-transform: uppercase; letter-spacing: 0.5px;">
+                    {{ type === 'A' ? 'Ação' : type === 'BA' ? 'Ação Bônus' : type === 'R' ? 'Reação' : 'Passivo' }}
+                  </label>
+                  <div class="category-items" style="display: flex; flex-direction: column; gap: 5px;">
+                    <div class="guide-item clickable-item" *ngFor="let item of categorizedActions[type]" 
+                         [class.disabled-ki]="!hasEnoughKi(item.cost)"
+                         (click)="hasEnoughKi(item.cost) ? openModal(item) : null"
+                         style="background: rgba(0,0,0,0.2); padding: 8px 12px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.2s;">
+                      <div class="guide-item-main" style="display: flex; flex-direction: column;">
+                        <span class="item-name" style="font-weight: bold; font-size: 0.95rem;">{{ item.name }}</span>
+                        <div class="item-rolls" *ngIf="item.hit || item.roll" style="font-size: 0.8rem; opacity: 0.8; color: var(--primary-color);">
+                          <span class="roll-hit" *ngIf="item.hit">{{ item.hit }} p/ acertar </span>
+                          <span class="roll-dmg" *ngIf="item.roll">({{ item.roll }} de dano)</span>
+                        </div>
+                      </div>
+                      <span class="item-cost" *ngIf="item.cost" style="background: rgba(197, 155, 39, 0.2); border: 1px solid var(--primary-color); color: var(--primary-color); padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; white-space: nowrap;">{{ item.cost }} Ki</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Coluna Direita de Combate: Ki Resources -->
+              <div class="magias-pacto dark-panel">
+                <div class="spell-slots-header" style="display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.3); padding: 1rem; border-radius: 8px; border: 1px solid var(--border-gold);">
+                  <h3>Pontos de Ki</h3>
+                  <div class="slots-tracker" style="display: flex; align-items: center; gap: 0.5rem;">
+                    <div class="slots-bubbles" style="display: flex; gap: 0.3rem; flex-wrap: wrap; max-width: 150px; justify-content: flex-end;">
+                      <span class="bubble" *ngFor="let i of [].constructor(pontosKi); let idx = index" [class.filled]="idx < kiAtual" style="width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--primary-color); background: transparent; transition: 0.3s;"></span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="ki-resource-card" style="margin-top: 1.5rem;">
+                  <div class="ki-status-row" style="display: flex; gap: 10px; margin-bottom: 20px; align-items: center;">
+                    <div class="ki-stat ki-current" style="flex: 1; text-align: center;">
+                      <span class="stat-label" style="display: block; font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">KI ATUAL</span>
+                      <div class="value" style="font-size: 1.8rem; font-family: var(--font-medieval); color: var(--primary-color);">{{ kiAtual }} / {{ pontosKi }}</div>
+                    </div>
+                    <div class="damage-input-wrapper manual-ki" style="flex: 1; text-align: center;">
+                      <label style="display: block; font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 2px;">Ki Gasto</label>
+                      <input type="number" [(ngModel)]="pj.ki_gasto" min="0" [max]="pontosKi" style="width: 100%; text-align: center; background: var(--bg-dark); border: 1px solid var(--border-gold); color: #fff; padding: 4px; border-radius: 4px; font-size: 1.1rem;">
+                    </div>
+                    <div class="ki-stat" style="flex: 1; text-align: center;">
+                      <span class="stat-label" style="display: block; font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">CD SALV. KI</span>
+                      <span class="value" style="font-size: 1.8rem; font-family: var(--font-medieval); color: var(--primary-color);">{{ cdKi }}</span>
+                    </div>
+                  </div>
+
+                  <div class="ki-abilities-detailed">
+                    <label class="inner-title" style="display: block; font-weight: bold; margin-bottom: 12px; font-size: 0.85rem; text-transform: uppercase; color: var(--text-muted); border-bottom: 1px dashed rgba(255,255,255,0.1); padding-bottom: 4px;">Habilidades de Ki</label>
+                    <div class="ki-list" style="display: flex; flex-direction: column; gap: 8px;">
+                      <div class="ki-item-row" *ngFor="let k of pj.kiAbilities" 
+                           [class.disabled-ki]="!hasEnoughKi(k.cost)"
+                           (click)="hasEnoughKi(k.cost) ? openModal(k) : null"
+                           style="background: rgba(0,0,0,0.2); padding: 10px 14px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.2s;">
+                        <span class="k-cost" style="font-weight: bold; color: var(--primary-color); min-width: 45px;">{{ k.cost }} Ki</span>
+                        <div class="k-main-info" style="display: flex; flex-direction: column; flex: 1; margin: 0 10px;">
+                          <span class="k-name" style="font-weight: bold; font-size: 0.95rem;">{{ k.name }}</span>
+                          <span class="action-badge small" [attr.data-action]="k.action" style="font-size: 0.65rem; width: fit-content; padding: 1px 4px; border-radius: 2px;">{{ k.action }}</span>
+                        </div>
+                        
+                        <ng-container *ngIf="k.name === 'Braços da Forma Astral'">
+                          <label class="switch" (click)="$event.stopPropagation()" style="position: relative; display: inline-block; width: 44px; height: 22px;">
+                            <input type="checkbox" 
+                                   [ngModel]="pj.estados.bracosAstrais" 
+                                   (ngModelChange)="toggleBracosAstrais($event)"
+                                   [disabled]="kiAtual < 1 && !pj.estados.bracosAstrais"
+                                   style="opacity: 0; width: 0; height: 0;">
+                            <span class="slider" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #555; transition: .4s; border-radius: 34px;"></span>
+                          </label>
+                        </ng-container>
+
+                        <ng-container *ngIf="k.name !== 'Braços da Forma Astral'">
+                          <button class="use-ki-btn" [disabled]="!hasEnoughKi(k.cost)" (click)="gastarKi(k.cost, $event)" style="background: var(--primary-color); border: none; color: #000; padding: 4px 8px; border-radius: 4px; font-weight: bold; cursor: pointer; transition: 0.2s; font-size: 0.85rem;">USAR</button>
+                        </ng-container>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- ================= ABA: TRAÇOS ================= -->
+          <div *ngIf="activeTab === 'tracos'" class="aba-tracos">
+            <div class="tracos-grid" style="display: flex; flex-direction: column; gap: 1.5rem;">
+              
+              <div class="dark-panel">
+                <h3>Características Base</h3>
+                <ul class="clickable-list flex-list" style="display: flex; flex-direction: column; gap: 8px; list-style: none; padding: 0;">
+                  <li *ngFor="let feat of pj.features" (click)="openModal(feat)" style="background: rgba(0,0,0,0.2); padding: 10px 14px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; transition: 0.2s;">
+                    <span class="spell-name" style="font-weight: bold; color: var(--primary-color);">{{ feat.name }}</span>
+                    <span class="action-badge" [attr.data-action]="feat.action" style="font-size: 0.7rem;">{{ feat.action }}</span>
+                  </li>
+                </ul>
+              </div>
+
+              <div class="dark-panel">
+                <h3>Talentos Adicionais</h3>
+                <ul class="clickable-list flex-list" style="display: flex; flex-direction: column; gap: 8px; list-style: none; padding: 0;">
+                  <li *ngFor="let tal of pj.talentos" (click)="openModal(tal)" style="background: rgba(0,0,0,0.2); padding: 10px 14px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; transition: 0.2s;">
+                    <span class="spell-name" style="font-weight: bold; color: var(--primary-color);">{{ tal.name }}</span>
+                    <span class="action-badge" [attr.data-action]="tal.action" style="font-size: 0.7rem;">{{ tal.action }}</span>
+                  </li>
+                </ul>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+<!-- Modal de Detalhes do Item -->
+<div class="modal-backdrop" *ngIf="showModal" (click)="closeModal()">
+  <div class="modal-content parchment" (click)="$event.stopPropagation()">
+    <button class="close-btn" (click)="closeModal()">×</button>
+    <header class="modal-header">
+      <span class="action-badge large" *ngIf="selectedItem?.action" [attr.data-action]="selectedItem?.action">
+        {{ selectedItem?.action }}
+      </span>
+      <h2>{{ selectedItem?.name }}</h2>
+    </header>
+    <div class="modal-body">
+      <p class="summary-line" *ngIf="selectedItem?.summary">
+        <strong>Resumo:</strong> <span [innerHTML]="formatText(selectedItem?.summary || '')"></span>
+      </p>
+      <hr *ngIf="selectedItem?.summary">
+      <div class="full-description">
+        <p *ngFor="let para of selectedItem?.description?.split('\n')" [innerHTML]="formatText(para)">
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de Descanso Curto -->
+<div class="dnd-modal" *ngIf="showShortRestModal">
+  <div class="modal-overlay" (click)="closeShortRestModal()"></div>
+  <div class="modal-content parchment scroll-modal" (click)="$event.stopPropagation()">
+    <div class="corner-decoration"></div>
+    
+    <div class="modal-header">
+      <h2 class="medieval-text">Descanso Curto</h2>
+      <button class="close-btn" (click)="closeShortRestModal()">×</button>
+    </div>
+
+    <div class="modal-body">
+      <div class="short-rest-logic" *ngIf="totalHealed === 0; else resultsView">
+        <p class="fancy-text">Quantos Dados de Vida (1d8) você deseja gastar para recuperar vida?</p>
+        <div class="setup-row">
+          <div class="input-group">
+            <label>Quantidade:</label>
+            <input type="number" [(ngModel)]="hitDiceInput" [max]="pj.dados_vida_atual" min="1">
+          </div>
+          <button class="confirm-btn" (click)="confirmarDescansoCurto()" [disabled]="hitDiceInput <= 0 || hitDiceInput > pj.dados_vida_atual">
+            Descansar
+          </button>
+        </div>
+        <p class="status-info">Disponível: <strong>{{ pj.dados_vida_atual }} / {{ dadosVidaMax }}</strong></p>
+      </div>
+
+      <ng-template #resultsView>
+        <div class="roll-results">
+          <h3 class="fancy-text">Resultados do Roll:</h3>
+          <div class="rolls-list">
+            <div class="roll-item" *ngFor="let result of shortRestResults; let i = index">
+              <span>Dado {{i+1}}:</span>
+              <span class="roll-calc">{{result.die}} + {{result.mod}} CON</span>
+              <span class="roll-total">= {{result.total}} HP</span>
+            </div>
+          </div>
+          <div class="total-summary">
+            <strong>Total Curado: <span class="calc-value">+{{totalHealed}} HP</span></strong>
+          </div>
+          <p class="auto-msg">Seus pontos de Ki foram restaurados para o nível máximo automaticamente.</p>
+          <button class="confirm-btn" (click)="closeShortRestModal()">Fechar</button>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+</div>

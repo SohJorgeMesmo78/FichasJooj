@@ -1,0 +1,165 @@
+@use "../../../styles/kosj/colors" as *;
+@use "../../../styles/kosj/fonts" as *;
+
+// Component-specific styles if any, currently mostly handled by global classes
+// Page title is now handled by the global .dnd-page-title class
+
+.html-content {
+  width: 100%;
+  font-family: $font-georgia;
+  font-size: 1.25rem;
+  line-height: 1.8;
+  color: #2c1e12;
+  text-align: justify;
+  position: relative;
+  z-index: 2;
+
+  p {
+    margin-bottom: 1.5rem;
+    
+    &:first-of-type::first-letter {
+      float: left;
+      font-family: $font-fancy;
+      font-size: 4.5rem;
+      line-height: 1;
+      margin-top: 0.2rem;
+      margin-right: 0.8rem;
+      color: $parchment-accent;
+      font-weight: bold;
+      text-shadow: 1px 1px 0 $dnd-parchment, 3px 3px 0 rgba(139, 69, 19, 0.2);
+    }
+  }
+
+  blockquote {
+    border-left: 3px solid rgba(139, 69, 19, 0.3);
+    margin: 1.5rem 0 2.5rem 2rem;
+    padding: 0.5rem 0 0.5rem 1.5rem;
+    font-style: italic;
+    text-align: justify;
+    color: $parchment-header;
+    font-size: 1.15rem;
+    background: transparent;
+
+    strong {
+      font-style: normal;
+      font-family: $font-fancy;
+      font-size: 1.1rem;
+      color: $parchment-accent;
+    }
+  }
+
+  h3 {
+    font-family: $font-fancy;
+    color: $parchment-accent;
+    font-size: 2rem;
+    margin-top: 3.5rem;
+    margin-bottom: 1.2rem;
+    text-align: left;
+    text-transform: uppercase;
+    border-bottom: 1px solid rgba(139, 69, 19, 0.3);
+    padding-bottom: 0.5rem;
+  }
+
+  hr {
+    border: none;
+    height: 1px;
+    background: rgba(139, 69, 19, 0.3);
+    margin: 3.5rem 0;
+    position: relative;
+
+    &::after {
+      content: '❧';
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      color: $parchment-accent;
+      background: $dnd-parchment;
+      padding: 0 15px;
+      font-size: 1.8rem;
+    }
+  }
+
+  strong {
+    color: $parchment-accent;
+    font-weight: 700;
+  }
+
+  .dnd-table {
+    width: 100%;
+    margin: 2rem 0;
+    border-collapse: collapse;
+    font-family: sans-serif;
+    font-size: 1rem;
+    text-align: left;
+    background-color: rgba(255, 255, 255, 0.3);
+    border-top: 2px solid $parchment-accent;
+    border-bottom: 2px solid $parchment-accent;
+
+    th, td {
+      padding: 0.8rem 1rem;
+      border-bottom: 1px solid rgba(139, 69, 19, 0.2);
+    }
+
+    th {
+      font-family: $font-fancy;
+      color: $parchment-accent;
+      text-transform: uppercase;
+      font-weight: bold;
+      background-color: rgba(139, 69, 19, 0.1);
+    }
+
+    tbody tr:nth-child(even) {
+      background-color: rgba(139, 69, 19, 0.05);
+    }
+
+    tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    td:first-child {
+      font-weight: bold;
+      color: $parchment-accent;
+      width: 50px;
+      text-align: center;
+    }
+  }
+
+  .traits-list {
+    list-style: none;
+    padding-left: 0;
+
+    li {
+      margin-bottom: 1rem;
+      padding-left: 1.5rem;
+      position: relative;
+
+      &::before {
+        content: '❖';
+        position: absolute;
+        left: 0;
+        top: 2px;
+        color: $parchment-accent;
+        font-size: 0.9rem;
+      }
+    }
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  // Minor adjustments for mobile content
+
+  .html-content {
+    font-size: 1.1rem;
+    
+    p:first-of-type::first-letter {
+      font-size: 3.5rem;
+    }
+
+    .dnd-table {
+      display: block;
+      overflow-x: auto;
+    }
+  }
+}

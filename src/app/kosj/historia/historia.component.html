@@ -1,0 +1,118 @@
+<div class="historia-page-container">
+  <!-- Top Navigation & Title Bar -->
+  <div class="historia-header-top">
+    <a routerLink="/kosj" class="medieval-btn btn-back">
+      <span class="btn-icon">🦎</span> Retornar à Tribo
+    </a>
+    <div class="header-title-wrapper">
+      <span class="header-subtitle">Crônicas de Kosj</span>
+      <h1>História do Monge</h1>
+    </div>
+    <div class="chapter-indicator-badge">
+      Capítulo <strong>{{ currentStepIndex + 1 }}</strong> de <strong>{{ steps.length }}</strong>
+    </div>
+  </div>
+
+  <!-- The Magic Scroll / Parchment -->
+  <div class="dnd-parchment-frame scroll-animate-in" *ngIf="currentStep">
+    <div class="dnd-inner-border"></div>
+
+    <!-- Chapter Stepper (Wax Seals / Runes) -->
+    <div class="chapter-stepper-container">
+      <div class="stepper-line"></div>
+      <div class="stepper-steps">
+        <button 
+          *ngFor="let cap of steps; let i = index" 
+          class="step-node" 
+          [class.active]="currentStepIndex === i"
+          [class.visited]="currentStepIndex > i"
+          [attr.aria-label]="cap.titulo"
+          (click)="goToStep(i)"
+        >
+          <div class="step-seal">
+            <span class="step-number">{{ i + 1 }}</span>
+          </div>
+          <span class="step-label">{{ cap.titulo }}</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Scroll Content Area -->
+    <div class="parchment-content-wrapper">
+      <!-- Decorative Header Ornament -->
+      <div class="scroll-ornament scroll-ornament-top">
+        <span class="ornament-symbol">⚜</span>
+      </div>
+
+      <!-- Active Chapter Heading -->
+      <div class="chapter-heading">
+        <span class="chapter-meta">Capítulo {{ currentStepIndex + 1 }}</span>
+        <h2 class="chapter-title">{{ currentStep.titulo }}</h2>
+        <div class="chapter-divider">
+          <span class="divider-dot">✦</span>
+          <span class="divider-line"></span>
+          <span class="divider-dot">✦</span>
+        </div>
+      </div>
+
+      <!-- Chapter Illustration (Photo between Title and Text) -->
+      <div class="story-images-container" *ngIf="currentStep.imagens && currentStep.imagens.length > 0">
+        <div class="image-wrapper" *ngFor="let img of currentStep.imagens">
+          <img [src]="img" class="story-image" alt="Ilustração da História">
+        </div>
+      </div>
+
+      <!-- Story Text Body -->
+      <div class="chapter-body-text html-content fade-in-content" [attr.data-step]="currentStepIndex">
+        <div [innerHTML]="currentStep.conteudoHTML"></div>
+      </div>
+
+      <!-- Decorative Footer Ornament -->
+      <div class="scroll-ornament scroll-ornament-bottom">
+        <span class="ornament-symbol">❦</span>
+      </div>
+    </div>
+
+    <!-- Page Footer Controls -->
+    <div class="parchment-footer">
+      <button 
+        class="nav-btn prev-btn" 
+        [disabled]="currentStepIndex === 0" 
+        (click)="previousStep()"
+      >
+        <span class="arrow">◀</span> Cap. Anterior
+      </button>
+
+      <div class="page-number-display">
+        Capítulo <span>{{ currentStepIndex + 1 }}</span> de {{ steps.length }}
+      </div>
+
+      <button 
+        class="nav-btn next-btn" 
+        [disabled]="currentStepIndex === steps.length - 1" 
+        (click)="nextStep()"
+      >
+        Próximo Cap. <span class="arrow">▶</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Final Path Button -->
+  <div class="bottom-action-container" *ngIf="currentStepIndex === steps.length - 1">
+    <div class="character-ready-msg">
+      <h3>Kosj está pronto para sua jornada...</h3>
+      <p>Agora que você conhece o passado, explore as habilidades e a ficha do Monge do Eu Astral.</p>
+    </div>
+    <div class="action-buttons">
+      <a routerLink="/kosj/ficha" class="medieval-btn btn-cta">
+        <span>📜</span> Ver Ficha de Personagem
+      </a>
+      <a routerLink="/kosj/raca" class="medieval-btn btn-cta">
+        <span>🍃</span> Ver Traços Raciais
+      </a>
+      <a routerLink="/kosj/lacos" class="medieval-btn btn-cta">
+        <span>👥</span> Ver Laços de Amizade
+      </a>
+    </div>
+  </div>
+</div>

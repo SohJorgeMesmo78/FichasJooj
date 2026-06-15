@@ -1,0 +1,466 @@
+<div class="ficha-container" [ngClass]="'theme-' + currentSeason">
+  <!-- BARRA DE TOPO (NOME E DESCANSOS) -->
+  <header class="ficha-header-top">
+    <div class="header-left">
+      <a routerLink="/kairo" class="btn-back">⬅ Taverna</a>
+      <div class="char-titles">
+        <h1>{{ character.nome }} <span class="season-badge" title="Estação atual do Transe">[{{ seasonName }}]</span></h1>
+        <span>{{ character.raca }} • {{ character.classe }} {{ character.subclasse }} Nv {{ character.nivel }} • {{ character.antecedente.nome }}</span>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="medieval-btn btn-short" (click)="abrirDescansoCurto()">Descanso Curto</button>
+      <button class="medieval-btn btn-long" (click)="abrirDescansoLongo()">Descanso Longo</button>
+    </div>
+  </header>
+
+  <div class="dnd-parchment-frame">
+    <div class="dnd-inner-border"></div>
+
+    <!-- LAYOUT PRINCIPAL D&D -->
+    <div class="dnd-layout">
+    
+    <!-- COLUNA 1: ATRIBUTOS (Esquerda) -->
+    <div class="col-atributos">
+      <div class="atributo-box" *ngFor="let attr of atributosArray">
+        <span class="attr-name">{{ attr.name }}</span>
+        <span class="attr-mod">{{ formatModifier(attr.mod) }}</span>
+        <div class="attr-score">{{ attr.score }}</div>
+      </div>
+    </div>
+
+    <!-- COLUNA 2: COMBATE & HP (Centro) -->
+    <div class="col-combate-hp">
+      <!-- Escudos de Combate -->
+      <div class="escudos-combate">
+        <div class="shield-box tooltip-container">
+          <span class="label">CA</span>
+          <span class="value">{{ calculatedCA }}</span>
+          <span class="tooltip-text">{{ caFormula }}</span>
+        </div>
+        <div class="shield-box">
+          <span class="label">Iniciativa</span>
+          <span class="value">{{ formatModifier(initiative) }}</span>
+        </div>
+        <div class="shield-box">
+          <span class="label">Desloc.</span>
+          <span class="value">9m</span>
+        </div>
+        <div class="shield-box">
+          <span class="label">Proficiência</span>
+          <span class="value">{{ formatModifier(profBonus) }}</span>
+        </div>
+      </div>
+
+      <!-- PAINEL DE VIDA -->
+      <div class="hp-panel">
+        <div class="hp-display">
+          <div class="hp-numbers">
+            <span class="current">{{ hpAtual }}</span>
+            <span class="max">/ {{ hpMax }}</span>
+            <span class="temp" *ngIf="hpTemp > 0">(+{{ hpTemp }} Temp)</span>
+          </div>
+          <span class="hp-label">Pontos de Vida</span>
+        </div>
+
+        <div class="hp-controls">
+          <input type="number" class="hp-input" [(ngModel)]="hpInput" min="0" placeholder="0">
+          <div class="hp-buttons">
+            <button class="btn-dano" (click)="aplicarDano()">Dano</button>
+            <button class="btn-cura" (click)="aplicarCura()">Cura</button>
+          </div>
+        </div>
+
+        <div class="hp-footer">
+          <div class="hit-dice">
+            <span class="label">Dados de Vida</span>
+            <span class="value">{{ hitDiceAtual }} / {{ hitDiceMax }} (d8)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COLUNA 3: ABAS (Direita/Larga) -->
+    <div class="col-abas">
+      <div class="tabs-header">
+        <button class="tab-btn" [class.active]="activeTab === 'ficha'" (click)="setTab('ficha')">Ficha</button>
+        <button class="tab-btn" [class.active]="activeTab === 'combate'" (click)="setTab('combate')">Combate & Magia</button>
+        <button class="tab-btn" [class.active]="activeTab === 'tracos'" (click)="setTab('tracos')">Traços & Detalhes</button>
+      </div>
+
+      <div class="tab-content">
+        
+        <!-- ================= ABA: FICHA ================= -->
+        <div *ngIf="activeTab === 'ficha'" class="aba-ficha">
+          <div class="pericias-proficiencias-grid">
+            
+            <div class="left-column">
+              <div class="dark-panel mb-3">
+                <h3>Outras Proficiências</h3>
+                <div class="outras-prof">
+                  <p><strong>Armaduras:</strong> {{ character.outras_proficiencias.armaduras.join(', ') }}</p>
+                  <p><strong>Armas:</strong> {{ character.outras_proficiencias.armas.join(', ') }}</p>
+                  <p><strong>Ferramentas:</strong> {{ character.outras_proficiencias.ferramentas.join(', ') }}</p>
+                  <p><strong>Idiomas:</strong> {{ character.outras_proficiencias.idiomas.join(', ') }}</p>
+                  
+                  <div class="trance-proficiencies" title="Provenientes do Transe do Eladrin e podem ser alteradas no descanso longo.">
+                    <p class="trance-label">Proficiências do Transe:</p>
+                    <span class="trance-item">{{ tranceProf1 }}</span>, 
+                    <span class="trance-item">{{ tranceProf2 }}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="pericias-box dark-panel">
+                <h3>Perícias</h3>
+                <ul class="pericias-list">
+                  <li *ngFor="let p of periciasCalculadas" [class.proficiente]="p.isProficient">
+                    <span class="pericia-bola">{{ p.isProficient ? '●' : '○' }}</span>
+                    <span class="pericia-bonus">{{ formatModifier(p.finalBonus) }}</span>
+                    <span class="pericia-nome">{{ p.nome }} <small>({{ p.attr }})</small></span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="right-column">
+              <div class="dark-panel">
+                <h3>Inventário</h3>
+                <div class="dinheiro mb-3">💰 PO: {{ character.inventario.dinheiro.PO }}</div>
+                <div class="inventario-items-list">
+                  <div *ngFor="let item of character.inventario.itens" class="inventario-item-card clickable-item" (click)="abrirDetalhesItem(item)">
+                    <div class="item-card-header">
+                      <span class="item-card-name">{{ item.nome }}</span>
+                      
+                      <!-- Checkbox estilizado -->
+                      <label *ngIf="item.equipavel" class="custom-checkbox" (click)="$event.stopPropagation()" title="Equipar">
+                        <input type="checkbox" [(ngModel)]="item.equipado">
+                        <span class="checkmark"></span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ================= ABA: TRAÇOS & DETALHES ================= -->
+        <div *ngIf="activeTab === 'tracos'" class="aba-tracos">
+          <div class="tracos-grid">
+            
+            <div class="dark-panel mb-4">
+              <h3>Aparência</h3>
+              <ul class="clickable-list flex-list">
+                <li><span class="spell-name">Tamanho: {{ character.aparencia.altura }}</span></li>
+                <li><span class="spell-name">Peso: {{ character.aparencia.peso }}</span></li>
+              </ul>
+            </div>
+
+            <div class="dark-panel mb-4">
+              <h3>Traços de Personalidade</h3>
+              <ul class="clickable-list flex-list">
+                <li *ngFor="let t of character.tracos_personalidade" (click)="abrirDetalhesTraco(t)">
+                  <span class="spell-name">{{ t.nome }}</span>
+                </li>
+              </ul>
+            </div>
+
+            <div class="dark-panel mb-4">
+              <h3>Raça: Traços de Eladrin</h3>
+              <ul class="clickable-list flex-list">
+                <li *ngFor="let t of character.tracos_raciais" (click)="abrirDetalhesTraco(t)">
+                  <span class="spell-name">{{ t.nome }}</span>
+                </li>
+              </ul>
+            </div>
+
+            <div class="dark-panel">
+              <h3>Subclasse: {{ character.tracos_subclasse.nome }}</h3>
+              <ul class="clickable-list flex-list">
+                <li *ngFor="let t of character.tracos_subclasse.tracos" (click)="abrirDetalhesTraco(t)">
+                  <span class="spell-name">{{ t.nome }}</span>
+                </li>
+              </ul>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ================= ABA: COMBATE ================= -->
+        <div *ngIf="activeTab === 'combate'" class="aba-combate">
+          
+          <div class="combate-grid">
+            <div class="ataques dark-panel">
+              <h3>Ações</h3>
+              <table class="tabela-ataques">
+                <thead>
+                  <tr>
+                    <th>Nome</th>
+                    <th>Bônus</th>
+                    <th>Dano/Tipo</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Raio Místico</td>
+                    <td>{{ formatModifier(atributosArray[5].mod + profBonus) }}</td>
+                    <td>
+                      <span class="tooltip-container">
+                        1d10{{ formatModifier(atributosArray[5].mod) }} Energia
+                        <span class="tooltip-text">1d10 + Car (energia)</span>
+                      </span>
+                    </td>
+                  </tr>
+                  <tr *ngIf="isItemEquipped('A Adaga')">
+                    <td>A Adaga</td>
+                    <td>{{ formatModifier(atributosArray[1].mod + profBonus) }}</td>
+                    <td>
+                      <span class="tooltip-container">
+                        1d4{{ formatModifier(atributosArray[1].mod) }} Perfurante
+                        <span class="tooltip-text">1d4+Dex</span>
+                      </span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <h3 class="mt-4">Invocações Místicas</h3>
+              <ul class="clickable-list">
+                <li *ngFor="let inv of character.caracteristicas_magicas.invocacoes_misticas" (click)="abrirDetalhesInvocacao(inv)">
+                  <span class="spell-name">{{ inv.nome }}</span>
+                </li>
+              </ul>
+            </div>
+
+            <!-- Magias do Pacto -->
+            <div class="magias-pacto dark-panel">
+              <div class="spell-slots-header">
+                <h3>Magia de Pacto</h3>
+                <div class="slots-tracker">
+                  <span class="label">Slots (Nv 2):</span>
+                  <div class="slots-bubbles">
+                    <span class="bubble" *ngFor="let i of [1, 2]" [class.filled]="i <= spellSlotsAtual"></span>
+                  </div>
+                  <button class="btn-gastar-slot" [disabled]="spellSlotsAtual === 0" (click)="usarSlot()">Usar Slot</button>
+                </div>
+              </div>
+
+              <!-- MAGIAS (Clicáveis) -->
+              <div class="spell-levels">
+                <div class="spell-level">
+                  <h4>Truques (Nível 0)</h4>
+                  <ul class="clickable-list">
+                    <li *ngFor="let m of character.magias.nivel_0" (click)="abrirDetalhesMagia(m)" [class.tooltip-container]="m.nome === 'Raio místico'">
+                      <span class="spell-name">{{ m.nome }}</span>
+                      <span class="tooltip-text" *ngIf="m.nome === 'Raio místico'">1d10 + Car (energia)</span>
+                    </li>
+                  </ul>
+                </div>
+                
+                <div class="spell-level">
+                  <h4>Nível 1</h4>
+                  <ul class="clickable-list">
+                    <li *ngFor="let m of character.magias.nivel_1" (click)="abrirDetalhesMagia(m)">
+                      <span class="spell-name">{{ m.nome }}</span>
+                    </li>
+                  </ul>
+                </div>
+                
+                <div class="spell-level">
+                  <h4>Nível 2</h4>
+                  <ul class="clickable-list">
+                    <li *ngFor="let m of character.magias.nivel_2" (click)="abrirDetalhesMagia(m)">
+                      <span class="spell-name">{{ m.nome }}</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              <!-- PASSO FEÉRICO COMPACTADO -->
+              <div class="fey-step-compacted mt-4">
+                <div class="spell-slots-header fey-header clickable-header" (click)="abrirDetalhesHabilidade('fey_step')" title="Clique para ver os detalhes da habilidade">
+                  <div class="fey-title">
+                    <h3>Passo Feérico <span class="info-icon">ℹ️</span></h3>
+                  </div>
+                  <div class="slots-tracker">
+                    <span class="label">Usos (CD {{ feyStepDC }}):</span>
+                    <div class="slots-bubbles">
+                      <ng-container *ngFor="let i of [1, 2, 3, 4, 5, 6]">
+                        <span class="bubble" *ngIf="i <= feyStepMax" [class.filled]="i <= feyStepAtual"></span>
+                      </ng-container>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- MODAL DE DESCANSO CURTO -->
+<div class="modal-overlay" *ngIf="showShortRestModal">
+  <div class="modal-content dark-panel">
+    <h2>Descanso Curto</h2>
+    <p>Seus <strong>Slots de Magia</strong> de Bruxo foram restaurados!</p>
+    
+    <hr class="divider">
+    
+    <h3>Gastar Dados de Vida (D8)</h3>
+    <p>Você tem <strong>{{ hitDiceAtual }}</strong> disponíveis.</p>
+    
+    <div class="modal-form">
+      <div class="form-group">
+        <label>Quantos dados vai gastar?</label>
+        <input type="number" [(ngModel)]="hitDiceToSpend" min="1" [max]="hitDiceAtual">
+      </div>
+      
+      <div class="form-group">
+        <label>Total de Cura Rolada (Dados + Mod. Con):</label>
+        <input type="number" [(ngModel)]="shortRestHealRolled" min="0">
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="medieval-btn btn-cancel" (click)="fecharDescansoCurto()">Cancelar</button>
+      <button class="medieval-btn btn-confirm" (click)="confirmarDescansoCurto()">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL DE DESCANSO LONGO (TRANSE ELADRIN) -->
+<div class="modal-overlay" *ngIf="showLongRestModal">
+  <div class="modal-content dark-panel trance-modal">
+    <h2>Transe (Descanso Longo)</h2>
+    <p>Vida, Dados de Vida e Magias serão 100% restauradas após o Transe de 4 horas.</p>
+    
+    <hr class="divider">
+    
+    <h3>Estação da Alma</h3>
+    <p class="trance-desc">Você pode alterar sua estação mística extraindo-a da memória élfica.</p>
+    
+    <div class="modal-form">
+      <div class="form-group">
+        <label>Selecione a Estação</label>
+        <select [(ngModel)]="tempSeason" class="trance-select">
+          <option value="primavera">Primavera</option>
+          <option value="verao">Verão</option>
+          <option value="outono">Outono</option>
+          <option value="inverno">Inverno</option>
+        </select>
+      </div>
+      
+      <div class="form-group mt-3">
+        <label>Proficiência Extra 1 (Arma/Ferramenta)</label>
+        <input type="text" [(ngModel)]="tempProf1">
+      </div>
+
+      <div class="form-group">
+        <label>Proficiência Extra 2 (Arma/Ferramenta)</label>
+        <input type="text" [(ngModel)]="tempProf2">
+      </div>
+    </div>
+
+    <div class="modal-actions mt-4">
+      <button class="medieval-btn btn-cancel" (click)="fecharDescansoLongo()">Cancelar</button>
+      <button class="medieval-btn btn-confirm" (click)="confirmarDescansoLongo()">Acordar do Transe</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL DE DETALHES (Magia ou Habilidade) -->
+<div class="modal-overlay" *ngIf="showDetailsModal">
+  <div class="modal-content dark-panel details-modal">
+    
+    <!-- Detalhe de Magia -->
+    <ng-container *ngIf="selectedMagia">
+      <h2 class="magic-title">{{ selectedMagia.nome }}</h2>
+      <div class="magic-stats">
+        <p><strong>Conjuração:</strong> {{ selectedMagia.conjuracao }}</p>
+        <p><strong>Alcance:</strong> {{ selectedMagia.alcance }}</p>
+        <p><strong>Duração:</strong> {{ selectedMagia.duracao }}</p>
+      </div>
+      <hr class="divider">
+      <p class="magic-desc">{{ selectedMagia.descricao }}</p>
+      
+      <div class="modal-actions mt-4">
+        <button class="medieval-btn btn-cancel" (click)="fecharDetalhes()">Fechar</button>
+        <button class="medieval-btn btn-gastar-slot" 
+                *ngIf="selectedMagia.conjuracao !== 'Truque'"
+                [disabled]="spellSlotsAtual === 0" 
+                (click)="usarSlot(); fecharDetalhes()">Conjurar (Gastar Slot)</button>
+      </div>
+    </ng-container>
+
+    <!-- Detalhe de Habilidade -->
+    <ng-container *ngIf="selectedHabilidade === 'fey_step'">
+      <h2 class="magic-title">Passo Feérico</h2>
+      <hr class="divider">
+      <div class="fey-desc text-left">
+        <p class="mb-2"><strong>Ação Bônus:</strong> Você pode se teletransportar magicamente até 9 metros para um espaço desocupado que possa ver. Seu Passo Feérico ganha o seguinte efeito baseado em sua estação atual:</p>
+        
+        <div class="season-effect" [class.active-season]="currentSeason === 'primavera'">
+          <strong>Primavera.</strong> Você pode tocar uma criatura voluntária a até 1,5 metros. Essa criatura se teletransporta em vez de você.
+        </div>
+        <div class="season-effect" [class.active-season]="currentSeason === 'verao'">
+          <strong>Verão.</strong> Cada criatura de sua escolha a até 1,5 metros sofre <strong>{{ profBonus }}</strong> de dano de fogo.
+        </div>
+        <div class="season-effect" [class.active-season]="currentSeason === 'outono'">
+          <strong>Outono.</strong> Até duas criaturas a 3m devem ser bem sucedidas em um teste de resistência (CD {{ feyStepDC }}) ou serão enfeitiçadas por 1 minuto.
+        </div>
+        <div class="season-effect" [class.active-season]="currentSeason === 'inverno'">
+          <strong>Inverno.</strong> Uma criatura a 1,5m antes de teleportar faz teste de resistência (CD {{ feyStepDC }}) ou ficará com medo de você.
+        </div>
+      </div>
+      
+      <div class="modal-actions mt-4">
+        <button class="medieval-btn btn-cancel" (click)="fecharDetalhes()">Fechar</button>
+        <button class="medieval-btn btn-confirm" 
+                [disabled]="feyStepAtual === 0" 
+                (click)="usarFeyStep(); fecharDetalhes()">Usar Passo Feérico</button>
+      </div>
+    </ng-container>
+
+    <!-- Detalhe de Invocação -->
+    <ng-container *ngIf="selectedInvocacao">
+      <h2 class="magic-title">{{ selectedInvocacao.nome }}</h2>
+      <hr class="divider">
+      <p class="magic-desc text-left">{{ selectedInvocacao.descricao }}</p>
+      
+      <div class="modal-actions mt-4">
+        <button class="medieval-btn btn-cancel" (click)="fecharDetalhes()">Fechar</button>
+      </div>
+    </ng-container>
+
+    <!-- Detalhe de Traço (Raça/Classe) -->
+    <ng-container *ngIf="selectedTraco">
+      <h2 class="magic-title">{{ selectedTraco.nome }}</h2>
+      <hr class="divider">
+      <div class="magic-desc text-left" style="white-space: pre-wrap;">{{ selectedTraco.descricao }}</div>
+      
+      <div class="modal-actions mt-4">
+        <button class="medieval-btn btn-cancel" (click)="fecharDetalhes()">Fechar</button>
+      </div>
+    </ng-container>
+
+    <!-- Detalhe de Item -->
+    <ng-container *ngIf="selectedItem">
+      <h2 class="magic-title">{{ selectedItem.nome }}</h2>
+      <hr class="divider">
+      <div class="magic-desc text-left" style="white-space: pre-wrap;">{{ selectedItem.descricao }}</div>
+      
+      <div class="modal-actions mt-4">
+        <button class="medieval-btn btn-cancel" (click)="fecharDetalhes()">Fechar</button>
+      </div>
+    </ng-container>
+
+  </div>
+</div>

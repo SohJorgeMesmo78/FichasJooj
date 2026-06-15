@@ -1,0 +1,725 @@
+@use "../../../styles/kosj/colors" as *;
+@use "../../../styles/kosj/fonts" as *;
+
+.historia-page-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  transition: all 0.5s ease;
+
+  --theme-color: #c59b27; // Kosj primary/gold color
+  --theme-glow: rgba(197, 155, 39, 0.3);
+}
+
+// 1. HEADER TOP
+.historia-header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid var(--primary-color);
+  padding-bottom: 1rem;
+  margin-bottom: 2rem;
+  gap: 1rem;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    text-align: center;
+    padding-bottom: 1.5rem;
+  }
+
+  .btn-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--primary-color);
+    text-decoration: none;
+    font-family: var(--font-medieval);
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--primary-color);
+    border-radius: 4px;
+    background: rgba(0, 0, 0, 0.3);
+    white-space: nowrap;
+    transition: 0.3s;
+    font-size: 0.95rem;
+
+    &:hover {
+      background: var(--primary-color);
+      color: #000;
+      box-shadow: 0 0 10px var(--primary-color);
+    }
+
+    .btn-icon {
+      font-size: 1.1rem;
+    }
+  }
+
+  .header-title-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .header-subtitle {
+      font-family: var(--font-medieval);
+      font-size: 0.85rem;
+      letter-spacing: 3px;
+      color: rgba(255, 255, 255, 0.5);
+      text-transform: uppercase;
+      margin-bottom: 0.2rem;
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      margin: 0;
+      color: var(--text-main);
+      text-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+      letter-spacing: 1px;
+
+      @media (max-width: 480px) {
+        font-size: 1.8rem;
+      }
+    }
+  }
+
+  .chapter-indicator-badge {
+    font-family: var(--font-sans);
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.7);
+    border: 1px solid var(--dnd-gold);
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    background: var(--card-bg);
+    transition: all 0.5s ease;
+
+    strong {
+      color: var(--primary-color);
+      font-weight: 600;
+    }
+  }
+}
+
+.medieval-btn {
+  display: inline-block;
+  background: transparent;
+  color: var(--primary-color);
+  border: 1px solid var(--primary-color);
+  padding: 0.5rem 1.5rem;
+  font-family: var(--font-medieval);
+  font-size: 1.1rem;
+  text-decoration: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: inset 0 0 0 0 var(--primary-color);
+  
+  &:hover {
+    box-shadow: inset 0 0 10px 0 var(--dnd-gold), 0 0 15px var(--dnd-gold);
+    background: rgba(255, 255, 255, 0.05);
+    color: #fff;
+  }
+}
+
+// 2. PERGAMINHO PRINCIPAL (Matching Kairo's layout but with Kosj colors)
+.dnd-parchment-frame {
+  background-color: #f4e7c5;
+  background-image: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.25), transparent),
+                    url(https://www.transparenttextures.com/patterns/natural-paper.png);
+  border: 12px double #5d2e0a;
+  border-radius: 8px;
+  padding: 3rem 2.5rem;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.65), inset 0 0 85px rgba(232, 215, 167, 0.6);
+  position: relative;
+  color: #2c2c2c;
+  width: 100%;
+  margin: 0 auto 3rem auto;
+  transition: all 0.5s ease;
+
+  @media (max-width: 600px) {
+    padding: 2rem 1.2rem;
+    border-width: 8px;
+  }
+
+  // Elementos Decorativos de Cantos
+  &::before, &::after {
+    content: "\2725";
+    position: absolute;
+    font-size: 1.8rem;
+    color: #a67c52;
+    line-height: 1;
+    z-index: 2;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+    pointer-events: none;
+  }
+  &::before { top: -8px; left: -8px; }
+  &::after { bottom: -8px; right: -8px; }
+
+  .dnd-inner-border {
+    position: absolute;
+    inset: 6px;
+    border: 1px solid rgba(166, 124, 82, 0.25);
+    pointer-events: none;
+    z-index: 1;
+  }
+}
+
+// Animação de entrada do pergaminho
+.scroll-animate-in {
+  animation: scrollUnroll 0.8s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+}
+
+@keyframes scrollUnroll {
+  from {
+    opacity: 0;
+    transform: scaleY(0.9) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: scaleY(1) translateY(0);
+  }
+}
+
+// 3. STEPPER MEDIEVAL (Controles superiores adaptados para 10 etapas de Kosj)
+.chapter-stepper-container {
+  position: relative;
+  margin-bottom: 3rem;
+  padding: 0 1rem;
+  z-index: 2;
+
+  .stepper-line {
+    position: absolute;
+    top: 20px;
+    left: 2rem;
+    right: 2rem;
+    height: 3px;
+    background: linear-gradient(90deg, #d2b48c, var(--theme-color), #d2b48c);
+    opacity: 0.5;
+    z-index: 1;
+    transition: background 0.5s ease;
+  }
+
+  .stepper-steps {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+  }
+
+  .step-node {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    outline: none;
+
+    // Efeito Wax Seal (Selo de cera)
+    .step-seal {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #8a8a8a; // Selo cinza para não visitados
+      border: 2px solid #5d2e0a;
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3), inset 0 0 10px rgba(0, 0, 0, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      position: relative;
+
+      @media (max-width: 480px) {
+        width: 32px;
+        height: 32px;
+      }
+
+      .step-number {
+        font-family: var(--font-medieval);
+        font-weight: 700;
+        font-size: 1.1rem;
+        color: #f4e7c5;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+
+        @media (max-width: 480px) {
+          font-size: 0.95rem;
+        }
+      }
+
+      &::after {
+        content: '';
+        position: absolute;
+        inset: 3px;
+        border: 1px dashed rgba(244, 231, 197, 0.4);
+        border-radius: 50%;
+        pointer-events: none;
+      }
+    }
+
+    .step-label {
+      position: absolute;
+      top: 48px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.75rem;
+      font-family: var(--font-medieval);
+      font-weight: 600;
+      color: #5d2e0a;
+      white-space: nowrap;
+      opacity: 0;
+      transition: all 0.3s ease;
+      pointer-events: none;
+      text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.5);
+    }
+
+    // Estados e Interações
+    &:hover {
+      .step-seal {
+        transform: scale(1.15) rotate(5deg);
+        box-shadow: 0 5px 12px rgba(0, 0, 0, 0.4);
+      }
+      .step-label {
+        opacity: 1;
+        transform: translateX(-50%) translateY(2px);
+      }
+    }
+
+    &.visited {
+      .step-seal {
+        background: #73c473; // Selo verde para lidos
+        border-color: #5d2e0a;
+      }
+    }
+
+    &.active {
+      .step-seal {
+        background: var(--theme-color);
+        border-color: #3e230f;
+        transform: scale(1.25);
+        box-shadow: 0 0 15px var(--theme-glow), 0 4px 10px rgba(0,0,0,0.3);
+        animation: sealPulse 2s infinite ease-in-out;
+      }
+
+      .step-label {
+        opacity: 1;
+        font-weight: 700;
+        color: var(--theme-color);
+        transform: translateX(-50%) translateY(2px);
+      }
+    }
+  }
+
+  // Estilo responsivo do stepper para mobile
+  @media (max-width: 768px) {
+    margin-bottom: 2rem;
+
+    .step-label {
+      display: none; // Oculta todas as labels para não encavalar
+    }
+
+    .step-node.active .step-label {
+      display: block; // Mostra apenas a label ativa como tooltip
+      opacity: 1;
+      top: 40px;
+      background: rgba(62, 35, 15, 0.95);
+      color: #f4e7c5;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.65rem;
+      z-index: 5;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+      text-shadow: none;
+      border: 1px solid rgba(244, 231, 197, 0.2);
+    }
+  }
+}
+
+@keyframes sealPulse {
+  0% { box-shadow: 0 0 10px var(--theme-glow), 0 4px 10px rgba(0,0,0,0.3); }
+  50% { box-shadow: 0 0 20px var(--theme-color), 0 4px 10px rgba(0,0,0,0.3); }
+  100% { box-shadow: 0 0 10px var(--theme-glow), 0 4px 10px rgba(0,0,0,0.3); }
+}
+
+// 4. CONTEÚDO DO TEXTO E IMAGEM DO CAPÍTULO
+.parchment-content-wrapper {
+  position: relative;
+  z-index: 2;
+  margin-top: 1rem;
+}
+
+.scroll-ornament {
+  text-align: center;
+  color: #a67c52;
+  font-size: 1.8rem;
+  user-select: none;
+  opacity: 0.8;
+  
+  &-top {
+    margin-bottom: 1rem;
+  }
+  &-bottom {
+    margin-top: 2rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .ornament-symbol {
+    display: inline-block;
+    position: relative;
+    padding: 0 1.5rem;
+
+    &::before, &::after {
+      content: '————';
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.8rem;
+      letter-spacing: -2px;
+      opacity: 0.4;
+    }
+    &::before { right: 100%; }
+    &::after { left: 100%; }
+  }
+}
+
+.chapter-heading {
+  text-align: center;
+  margin-bottom: 1.5rem;
+
+  .chapter-meta {
+    font-family: var(--font-medieval);
+    font-size: 0.8rem;
+    letter-spacing: 3px;
+    color: #7d543a;
+    display: block;
+    margin-bottom: 0.3rem;
+  }
+
+  .chapter-title {
+    font-size: 2rem;
+    color: #3e230f;
+    margin: 0;
+    font-weight: 700;
+    line-height: 1.2;
+
+    @media (max-width: 480px) {
+      font-size: 1.6rem;
+    }
+  }
+
+  .chapter-divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 0.6rem;
+    gap: 0.5rem;
+
+    .divider-dot {
+      color: var(--theme-color);
+      font-size: 0.8rem;
+    }
+
+    .divider-line {
+      width: 80px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, #a67c52, transparent);
+    }
+  }
+}
+
+// Imagens da história menores e posicionadas entre o título e o texto
+.story-images-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin: 1.5rem 0 2rem 0;
+  z-index: 2;
+  position: relative;
+  
+  .image-wrapper {
+    position: relative;
+    padding: 8px;
+    background: #fff;
+    border: 1px solid #ddd;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    transform: rotate(-0.5deg);
+    transition: transform 0.3s ease;
+
+    &:hover {
+      transform: rotate(0deg) scale(1.03);
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      box-shadow: inset 0 0 10px rgba(0,0,0,0.08);
+      pointer-events: none;
+    }
+
+    .story-image {
+      max-width: 100%;
+      max-height: 250px; // Altura reduzida como solicitado
+      display: block;
+      filter: sepia(0.15) contrast(1.05);
+      border-radius: 2px;
+    }
+  }
+}
+
+// Corpo de Texto Principal
+.chapter-body-text {
+  font-family: 'Georgia', 'Times New Roman', serif;
+  font-size: 1.125rem;
+  line-height: 1.8;
+  color: #2c2c2c;
+  text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.4);
+  max-width: 750px;
+  margin: 0 auto;
+
+  ::ng-deep {
+    p {
+      margin-bottom: 1.5rem;
+      text-align: justify;
+      text-indent: 2rem;
+
+      @media (max-width: 480px) {
+        text-align: left;
+        text-indent: 1rem;
+        font-size: 1.05rem;
+      }
+
+      em {
+        font-style: italic;
+        color: #3e230f;
+        font-weight: 500;
+      }
+
+      strong {
+        color: #1a1a1a;
+        font-weight: 700;
+      }
+    }
+
+    // Estilo de Drop Cap para a primeira letra do primeiro parágrafo
+    p:first-of-type::first-letter {
+      float: left;
+      font-size: 3.8rem;
+      line-height: 0.85;
+      margin: 0.1em 0.12em 0 0;
+      font-family: var(--font-medieval);
+      font-weight: 700;
+      color: var(--theme-color);
+      border: 2px solid var(--theme-color);
+      padding: 8px 12px;
+      background: rgba(255, 255, 255, 0.65);
+      border-radius: 4px;
+      box-shadow: 4px 4px 0px var(--theme-glow);
+      text-shadow: none;
+      transition: all 0.5s ease;
+
+      @media (max-width: 480px) {
+        font-size: 3.2rem;
+        padding: 6px 9px;
+      }
+    }
+
+    blockquote {
+      border-left: 3px solid rgba(139, 69, 19, 0.3);
+      margin: 1.5rem 0 1.5rem 2rem;
+      padding: 0.5rem 0 0.5rem 1.5rem;
+      font-style: italic;
+      text-align: justify;
+      color: #5d2e0a;
+      font-size: 1.15rem;
+      background: transparent;
+    }
+
+    h3 {
+      font-family: var(--font-medieval);
+      color: #3e230f;
+      font-size: 1.8rem;
+      margin-top: 3rem;
+      margin-bottom: 1.2rem;
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    hr {
+      border: none;
+      height: 1px;
+      background: rgba(139, 69, 19, 0.25);
+      margin: 3.5rem 0;
+      position: relative;
+
+      &::after {
+        content: '❧';
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        color: var(--theme-color);
+        background: #f4e7c5; // Match paper background color
+        padding: 0 15px;
+        font-size: 1.6rem;
+      }
+    }
+  }
+}
+
+// Animação de transição quando troca de capítulo
+.fade-in-content {
+  animation: scrollTextFade 0.6s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+}
+
+@keyframes scrollTextFade {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// 5. FOOTER CONTROLS
+.parchment-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 3rem;
+  border-top: 1px dashed rgba(93, 46, 10, 0.25);
+  padding-top: 1.5rem;
+  position: relative;
+  z-index: 2;
+
+  @media (max-width: 480px) {
+    flex-direction: column-reverse;
+    gap: 1.2rem;
+  }
+
+  .page-number-display {
+    font-family: var(--font-medieval);
+    font-size: 0.95rem;
+    color: #5d2e0a;
+    font-weight: 600;
+
+    span {
+      font-size: 1.2rem;
+      color: var(--theme-color);
+      font-weight: 700;
+      transition: color 0.5s ease;
+    }
+  }
+
+  .nav-btn {
+    background: transparent;
+    border: 1px solid rgba(93, 46, 10, 0.4);
+    color: #5d2e0a;
+    padding: 0.5rem 1.2rem;
+    font-family: var(--font-medieval);
+    font-size: 0.95rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+
+    @media (max-width: 480px) {
+      width: 100%;
+      justify-content: center;
+      padding: 0.6rem;
+    }
+
+    .arrow {
+      font-size: 0.75rem;
+      transition: transform 0.2s ease;
+    }
+
+    &:hover:not(:disabled) {
+      border-color: var(--theme-color);
+      background: rgba(255, 255, 255, 0.5);
+      color: var(--theme-color);
+      box-shadow: 0 4px 8px var(--theme-glow);
+
+      &.next-btn .arrow {
+        transform: translateX(3px);
+      }
+      &.prev-btn .arrow {
+        transform: translateX(-3px);
+      }
+    }
+
+    &:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+      border-color: rgba(93, 46, 10, 0.2);
+    }
+  }
+}
+
+// 6. DETALHES DE FINAL DE JORNADA (CTA BOX)
+.bottom-action-container {
+  background: var(--card-bg);
+  border: 1px solid var(--dnd-gold);
+  border-radius: 8px;
+  padding: 2rem;
+  text-align: center;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+  max-width: 750px;
+  margin: 0 auto 3rem auto;
+  animation: actionPanelSlide 0.6s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+
+  .character-ready-msg {
+    margin-bottom: 1.5rem;
+
+    h3 {
+      font-size: 1.6rem;
+      color: var(--primary-color);
+      margin-bottom: 0.5rem;
+      font-family: var(--font-medieval);
+    }
+
+    p {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 1rem;
+    }
+  }
+
+  .action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+
+    .btn-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.7rem 1.8rem;
+      font-size: 1.05rem;
+      border-color: var(--primary-color);
+      box-shadow: inset 0 0 0 0 var(--primary-color);
+
+      &:hover {
+        background: var(--primary-color);
+        color: #000;
+        box-shadow: 0 0 15px var(--primary-color);
+      }
+    }
+  }
+}
+
+@keyframes actionPanelSlide {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

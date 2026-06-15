@@ -1,0 +1,56 @@
+<div class="home-container">
+  <div style="width: 100%; display: flex; justify-content: flex-start; margin-bottom: 20px;">
+    <a routerLink="/" class="dnd-back-button" style="font-size: 0.8rem; padding: 0.4rem 0.8rem;">← Escolher Personagem</a>
+  </div>
+
+  <div class="avatar-section">
+    <div class="avatar-frame">
+      <img src="avatar.png" alt="Kairo Avatar" class="avatar-image">
+    </div>
+    <h1 class="character-name">Kairo</h1>
+  </div>
+
+  <div class="cards-grid">
+    <a routerLink="/kairo/historia" class="nav-card">
+      <div class="card-icon">📜</div>
+      <div class="card-content">
+        <h2>História</h2>
+        <p>A lenda esquecida...</p>
+      </div>
+    </a>
+
+    <a routerLink="/kairo/ficha" class="nav-card">
+      <div class="card-icon">⚔️</div>
+      <div class="card-content">
+        <h2>Ficha</h2>
+        <p>Atributos e perícias arcanas...</p>
+      </div>
+    </a>
+
+    <a routerLink="/kairo/lacos" class="nav-card construction-card">
+      <div class="badge-em-construcao">Em Construção</div>
+      <div class="card-icon">👥</div>
+      <div class="card-content">
+        <h2>Laços</h2>
+        <p>Família, aliados e inimigos feéricos...</p>
+      </div>
+    </a>
+  </div>
+
+  <div class="section-divider">
+    <span>Informações Gerais</span>
+  </div>
+
+  <div class="mini-cards-section">
+    <a routerLink="/kairo/raca" class="mini-card construction-mini-card" style="text-decoration: none; display: flex; flex-direction: column; cursor: pointer;">
+      <span class="micro-badge">Em Construção</span>
+      <span class="mini-label">Raça</span> 
+      <span class="mini-value">Eladrin Feérico</span>
+    </a>
+    <a routerLink="/kairo/classe" class="mini-card construction-mini-card" style="text-decoration: none; display: flex; flex-direction: column; cursor: pointer;">
+      <span class="micro-badge">Em Construção</span>
+      <span class="mini-label">Classe/Subclasse</span> 
+      <span class="mini-value">Bruxo do Pacto do Tomo</span>
+    </a>
+  </div>
+</div>

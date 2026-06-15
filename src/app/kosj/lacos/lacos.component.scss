@@ -1,0 +1,462 @@
+@use "../../../styles/kosj/colors" as *;
+@use "../../../styles/kosj/fonts" as *;
+
+.grupos-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 4rem;
+  width: 100%;
+}
+
+.grupo-section {
+  .grupo-title {
+    font-family: $font-fancy;
+    font-size: 2.2rem;
+    color: $dnd-gold;
+    border-bottom: 2px solid $dnd-gold;
+    padding-bottom: 0.5rem;
+    margin-bottom: 2rem;
+    display: inline-block;
+  }
+}
+
+.personagens-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 2rem;
+}
+
+.personagem-card {
+  cursor: pointer;
+  background-color: $dnd-parchment;
+  border: 1px solid #c5a059;
+  border-radius: 4px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  box-shadow:
+    0 10px 20px rgba(0, 0, 0, 0.4),
+    inset 0 0 40px rgba($dnd-parchment-dark, 0.5);
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+  overflow: hidden;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url("https://www.transparenttextures.com/patterns/old-map.png");
+    opacity: 0.1;
+    pointer-events: none;
+  }
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow:
+      0 15px 30px rgba(0, 0, 0, 0.6),
+      inset 0 0 50px rgba($dnd-parchment-dark, 0.7);
+  }
+
+  .image-container {
+    width: 180px;
+    height: 180px;
+    margin-bottom: 1.5rem;
+    position: relative;
+    padding: 10px;
+    background: #3c3c3c;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+
+    .image-wrapper {
+      width: 100%;
+      height: 100%;
+      background: #2a2a2a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      border: 1px solid #555;
+
+      .personagem-foto {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+
+      .corner-ornament {
+        position: absolute;
+        width: 15px;
+        height: 15px;
+        border: 2px solid $dnd-gold;
+        z-index: 2;
+
+        &.top-left {
+          top: 5px;
+          left: 5px;
+          border-right: none;
+          border-bottom: none;
+        }
+        &.top-right {
+          top: 5px;
+          right: 5px;
+          border-left: none;
+          border-bottom: none;
+        }
+        &.bottom-left {
+          bottom: 5px;
+          left: 5px;
+          border-right: none;
+          border-top: none;
+        }
+        &.bottom-right {
+          bottom: 5px;
+          right: 5px;
+          border-left: none;
+          border-top: none;
+        }
+      }
+    }
+  }
+
+  .card-content {
+    text-align: center;
+    width: 100%;
+    z-index: 1;
+
+    .personagem-name {
+      font-family: $font-fancy;
+      font-size: 1.8rem;
+      color: $parchment-header;
+      margin: 0 0 0.2rem 0;
+    }
+
+    .personagem-laco {
+      font-family: $font-medieval;
+      font-size: 1rem;
+      color: $parchment-accent;
+      font-style: italic;
+      margin-bottom: 1.2rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .nickname-box {
+      background: rgba($dnd-parchment-dark, 0.3);
+      padding: 0.8rem;
+      border-radius: 4px;
+      border: 1px dashed rgba($parchment-accent, 0.4);
+
+      .nickname-label {
+        display: block;
+        font-size: 0.8rem;
+        color: $parchment-text;
+        opacity: 0.7;
+        margin-bottom: 0.3rem;
+      }
+
+      .nickname-wrapper {
+        height: 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .nickname-value {
+        font-family: $font-fancy;
+        font-size: 1.2rem;
+        color: $dnd-red;
+        font-weight: bold;
+        animation: nicknameFade 1s infinite alternate;
+      }
+    }
+  }
+}
+
+@keyframes nicknameFade {
+  0% {
+    opacity: 0.8;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+}
+
+/* Modal Styles */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(8px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal-scroll {
+  background-color: $dnd-parchment;
+  background-image: 
+    radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.2) 0%, rgba(0, 0, 0, 0) 100%),
+    url("https://www.transparenttextures.com/patterns/natural-paper.png");
+  border: 12px double $parchment-header;
+  
+  box-shadow: 
+    0 20px 50px rgba(0, 0, 0, 0.8),
+    0 0 100px rgba($dnd-parchment-dark, 0.5) inset;
+    
+  width: 90%;
+  max-width: 1000px;
+  max-height: 85vh;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 3rem;
+  border-radius: 4px;
+  
+  transform-origin: center top;
+  animation: unrollScroll 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  clip-path: inset(0 0 100% 0);
+
+  &.open {
+    clip-path: inset(0 0 0 0);
+  }
+
+  .close-btn {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: transparent;
+    border: none;
+    font-size: 2.2rem;
+    color: $parchment-accent;
+    cursor: pointer;
+    line-height: 1;
+    transition: transform 0.3s, color 0.3s;
+    z-index: 100;
+
+    &:hover {
+      transform: rotate(90deg) scale(1.2);
+      color: $dnd-red;
+    }
+  }
+}
+
+@keyframes unrollScroll {
+  0% { clip-path: inset(0 0 100% 0); transform: scaleY(0); }
+  100% { clip-path: inset(0 0 0 0); transform: scaleY(1); }
+}
+
+.modal-content {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 3rem;
+  overflow: hidden; // We'll handle individual column scrolling
+  height: 100%;
+}
+
+/* Coluna Esquerda: Identidade (FIXA) */
+.identity-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 1rem;
+  border-right: 1px solid rgba($parchment-accent, 0.2);
+  padding-right: 2rem;
+
+  .modal-image-container {
+    width: 100%;
+    aspect-ratio: 1;
+    background: #3c3c3c;
+    padding: 10px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+    margin-bottom: 1.5rem;
+
+    .modal-image-wrapper {
+      width: 100%;
+      height: 100%;
+      background: #2a2a2a;
+      position: relative;
+      border: 1px solid #555;
+      overflow: hidden;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: sepia(0.2) contrast(1.1);
+      }
+
+      .corner-ornament {
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        border: 2px solid $dnd-gold;
+        z-index: 2;
+
+        &.top-left { top: 8px; left: 8px; border-right: none; border-bottom: none; }
+        &.top-right { top: 8px; right: 8px; border-left: none; border-bottom: none; }
+        &.bottom-left { bottom: 8px; left: 8px; border-right: none; border-top: none; }
+        &.bottom-right { bottom: 8px; right: 8px; border-left: none; border-top: none; }
+      }
+    }
+  }
+
+  .modal-char-name {
+    font-family: $font-fancy;
+    font-size: 2.2rem;
+    color: $dnd-red;
+    text-align: center;
+    margin-bottom: 0.5rem;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+  }
+
+  .name-underline {
+    width: 120px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, $dnd-gold, transparent);
+  }
+}
+
+/* Coluna Direita: Informações (COM SCROLL) */
+.info-column {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  overflow-y: auto;
+  padding-right: 1.5rem;
+  height: 100%;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+  &::-webkit-scrollbar-track {
+    background: rgba($dnd-parchment-dark, 0.2);
+    border-radius: 4px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: rgba($parchment-accent, 0.5);
+    border-radius: 4px;
+    border: 2px solid $dnd-parchment;
+    
+    &:hover {
+      background: $parchment-accent;
+    }
+  }
+
+  .info-section {
+    .section-label {
+      font-family: $font-fancy;
+      font-size: 1rem;
+      color: $parchment-header;
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      border-bottom: 1px solid rgba($parchment-accent, 0.2);
+      display: inline-block;
+    }
+
+    .section-value {
+      font-family: $font-medieval;
+      font-size: 1.2rem;
+      color: $parchment-text;
+      
+      &.highlight {
+        color: $parchment-accent;
+        font-weight: bold;
+      }
+    }
+
+    .nicknames-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      margin-top: 0.5rem;
+
+      .nickname-tag {
+        background: rgba($dnd-red, 0.05);
+        border: 1px solid rgba($dnd-red, 0.4);
+        color: $dnd-red;
+        padding: 0.2rem 0.7rem;
+        border-radius: 15px;
+        font-family: $font-fancy;
+        font-size: 0.9rem;
+      }
+    }
+
+    &.history-section {
+      margin-bottom: 1rem;
+      
+      .history-text {
+        font-family: $font-georgia;
+        font-size: 1.1rem;
+        line-height: 1.7;
+        color: $parchment-text;
+        text-align: justify;
+        background: rgba($dnd-parchment-dark, 0.15);
+        padding: 1.5rem;
+        border-radius: 4px;
+        border-left: 4px solid $dnd-gold;
+        box-shadow: inset 2px 2px 5px rgba(0,0,0,0.05);
+      }
+    }
+  }
+}
+
+@media (max-width: 900px) {
+  .modal-scroll {
+    padding: 2rem 1.5rem;
+    width: 95%;
+  }
+
+  .modal-content {
+    grid-template-columns: 1fr;
+    overflow-y: auto;
+    
+    &::-webkit-scrollbar { width: 0; } // Hide main scroll but keep functionality
+  }
+
+  .identity-column {
+    border-right: none;
+    border-bottom: 1px solid rgba($parchment-accent, 0.2);
+    padding-right: 0;
+    padding-bottom: 2rem;
+    
+    .modal-image-container {
+      max-width: 250px;
+    }
+  }
+
+  .info-column {
+    padding-top: 1rem;
+    padding-right: 0;
+    overflow-y: visible;
+  }
+}
+
+@media (max-width: 768px) {
+  .page-title {
+    font-size: 2.5rem !important;
+  }
+
+  .personagens-list {
+    grid-template-columns: 1fr;
+  }
+}

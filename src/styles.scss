@@ -1,1 +1,309 @@
-/* You can add global styles to this file, and also import other style files */
+@use "styles/kosj/colors" as kosj-colors;
+@use "styles/kosj/fonts" as kosj-fonts;
+
+// Google Fonts: MedievalSharp and Montserrat
+@import url('https://fonts.googleapis.com/css2?family=MedievalSharp&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+// Global Font configuration
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'MedievalSharp', cursive, serif;
+}
+
+body, p, span, div, input, button, select, textarea {
+  font-family: 'Montserrat', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+// -----------------------------------------------------------------------------
+// SELECTION HOME THEME
+// -----------------------------------------------------------------------------
+body.selection-theme {
+  margin: 0;
+  padding: 0;
+  background: radial-gradient(circle at 50% 50%, #1c1f2e 0%, #0d0f17 100%);
+  background-attachment: fixed;
+  color: #f0f4f8;
+  min-height: 100vh;
+  transition: all 0.5s ease;
+}
+
+// -----------------------------------------------------------------------------
+// KOSJ THEME (蜥蜴人 Lizardfolk Portal Styles)
+// -----------------------------------------------------------------------------
+body.kosj-theme {
+  margin: 0;
+  padding: 0;
+  background-color: kosj-colors.$bg-color;
+  background-image: url('https://www.transparenttextures.com/patterns/dark-leather.png');
+  background-attachment: fixed;
+  color: kosj-colors.$text-main;
+  min-height: 100vh;
+
+  a {
+    text-decoration: none;
+    color: kosj-colors.$primary-color;
+  }
+
+  // CSS variables for Kosj components
+  --primary-color: #{kosj-colors.$primary-color};
+  --secondary-color: #{kosj-colors.$secondary-color};
+  --bg-color: #{kosj-colors.$bg-color};
+  --card-bg: #{kosj-colors.$card-bg};
+  --text-main: #{kosj-colors.$text-main};
+  --border-color: #{kosj-colors.$border-color};
+
+  --dnd-parchment: #{kosj-colors.$dnd-parchment};
+  --dnd-parchment-dark: #{kosj-colors.$dnd-parchment-dark};
+  --dnd-red: #{kosj-colors.$dnd-red};
+  --dnd-gold: #{kosj-colors.$dnd-gold};
+  --dnd-border: #{kosj-colors.$dnd-border};
+  --dnd-text: #{kosj-colors.$dnd-text};
+
+  --font-fancy: #{kosj-fonts.$font-fancy};
+  --font-medieval: #{kosj-fonts.$font-medieval};
+  --font-logo: #{kosj-fonts.$font-logo};
+  --font-body: #{kosj-fonts.$font-body};
+
+  .dnd-page-container {
+    min-height: 100vh;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    animation: dndFadeIn 0.8s ease-out;
+  }
+
+  @keyframes dndFadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .dnd-header-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 3rem;
+    z-index: 100;
+  }
+
+  .dnd-back-button {
+    font-family: kosj-fonts.$font-medieval;
+    font-size: 1rem;
+    font-weight: bold;
+    color: kosj-colors.$primary-color;
+    padding: 0.6rem 1.2rem;
+    border: 1px solid kosj-colors.$dnd-gold;
+    border-radius: 4px;
+    background: kosj-colors.$btn-back-bg;
+    backdrop-filter: blur(5px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+
+    &:hover {
+      background: kosj-colors.$btn-back-hover-bg;
+      color: #000;
+      transform: translateX(-4px);
+      box-shadow: 0 0 15px rgba(kosj-colors.$primary-color, 0.4);
+    }
+  }
+
+  .dnd-page-title-container {
+    text-align: center;
+    margin-bottom: 4rem;
+    width: 100%;
+  }
+
+  .dnd-page-title {
+    font-family: kosj-fonts.$font-fancy;
+    font-size: kosj-fonts.$size-title;
+    color: kosj-colors.$primary-color;
+    margin: 0;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-weight: 700;
+    text-align: center;
+
+    &::after {
+      content: '❧ ──── ☙';
+      display: block;
+      font-size: 1.2rem;
+      color: kosj-colors.$dnd-gold;
+      margin-top: 0.5rem;
+      opacity: 0.8;
+      letter-spacing: normal;
+    }
+  }
+
+  .dnd-parchment-frame {
+    background-color: kosj-colors.$dnd-parchment;
+    background-image: 
+      radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.2) 0%, rgba(0, 0, 0, 0) 100%),
+      url('https://www.transparenttextures.com/patterns/natural-paper.png');
+    border: 12px double kosj-colors.$parchment-header;
+    border-radius: 4px;
+    padding: 3rem;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), inset 0 0 80px rgba(kosj-colors.$dnd-parchment-dark, 0.4);
+    position: relative;
+    color: kosj-colors.$parchment-text;
+    width: 100%;
+
+    .dnd-page-title {
+      color: kosj-colors.$parchment-header;
+      text-shadow: none;
+      margin-bottom: 3rem;
+      
+      &::after {
+        color: kosj-colors.$parchment-accent;
+      }
+    }
+    
+    &::before, &::after {
+      content: '✥';
+      position: absolute;
+      font-size: 2rem;
+      color: kosj-colors.$dnd-gold;
+      line-height: 1;
+      z-index: 2;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+      pointer-events: none;
+    }
+
+    &::before { top: -10px; left: -10px; }
+    &::after { bottom: -10px; right: -10px; }
+
+    .dnd-inner-border {
+      position: absolute;
+      top: 5px; left: 5px; right: 5px; bottom: 5px;
+      border: 1px solid rgba(kosj-colors.$dnd-gold, 0.3);
+      pointer-events: none;
+      z-index: 1;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .dnd-page-container { padding: 1.5rem 0.5rem; }
+    .dnd-parchment-frame { padding: 2rem 1rem; border-width: 8px; }
+    .dnd-page-title { font-size: 2rem !important; }
+  }
+}
+
+// -----------------------------------------------------------------------------
+// KAIRO THEME (Eladrin Portal Styles)
+// -----------------------------------------------------------------------------
+body.kairo-theme {
+  --primary: #98fb98;
+  --primary-hover: #b0ffb0;
+  --bg-dark: #121a14;
+  --bg-card: rgba(25, 40, 30, 0.85);
+  --border-gold: #73c473;
+  --primary-glow: rgba(144, 238, 144, 0.25);
+  --text-main: #f0e6d2;
+  --text-muted: #a69886;
+  --bg-gradient-top: #1c2a1f;
+  
+  --font-medieval: 'MedievalSharp', cursive;
+  --font-sans: 'Montserrat', sans-serif;
+
+  background-color: var(--bg-dark);
+  color: var(--text-main);
+  background-image: radial-gradient(circle at 50% 0%, var(--bg-gradient-top, #1c2a1f) 0%, var(--bg-dark) 80%),
+                    url('https://www.transparenttextures.com/patterns/dark-leather.png');
+  background-attachment: fixed;
+  min-height: 100vh;
+  transition: background-color 0.5s ease, background-image 0.5s ease;
+
+  &.theme-primavera {
+    --primary: #98fb98;
+    --primary-hover: #b0ffb0;
+    --border-gold: #73c473;
+    --primary-glow: rgba(144, 238, 144, 0.25);
+    --bg-dark: #121a14;
+    --bg-card: rgba(25, 40, 30, 0.85);
+    --bg-gradient-top: #1c2a1f;
+  }
+
+  &.theme-verao {
+    --primary: #ffcc00;
+    --primary-hover: #ffe066;
+    --border-gold: #cca300;
+    --primary-glow: rgba(255, 204, 0, 0.25);
+    --bg-dark: #1a1600;
+    --bg-card: rgba(40, 32, 0, 0.85);
+    --bg-gradient-top: #2a2200;
+  }
+
+  &.theme-outono {
+    --primary: #ff6b35;
+    --primary-hover: #ff8c61;
+    --border-gold: #cc562a;
+    --primary-glow: rgba(255, 107, 53, 0.25);
+    --bg-dark: #1a100a;
+    --bg-card: rgba(40, 25, 15, 0.85);
+    --bg-gradient-top: #2a160a;
+  }
+
+  &.theme-inverno {
+    --primary: #add8e6;
+    --primary-hover: #c4ebfa;
+    --border-gold: #8ab2c2;
+    --primary-glow: rgba(173, 216, 230, 0.25);
+    --bg-dark: #0a141a;
+    --bg-card: rgba(15, 30, 40, 0.85);
+    --bg-gradient-top: #10202a;
+  }
+
+  .medieval-btn {
+    display: inline-block;
+    background: transparent;
+    color: var(--primary);
+    border: 1px solid var(--primary);
+    padding: 0.5rem 1.5rem;
+    font-family: var(--font-medieval);
+    font-size: 1.1rem;
+    text-decoration: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: inset 0 0 0 0 var(--primary);
+    
+    &:hover {
+      box-shadow: inset 0 0 10px 0 var(--border-gold), 0 0 15px var(--border-gold);
+      background: rgba(255, 255, 255, 0.05);
+      color: #fff;
+    }
+  }
+
+  .empty-page-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    text-align: center;
+    
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      text-shadow: 0 0 10px var(--primary);
+    }
+    
+    p {
+      font-size: 1.2rem;
+      color: var(--text-muted);
+      margin-bottom: 2rem;
+    }
+  }
+}

@@ -1,0 +1,234 @@
+@use "../../../styles/kosj/colors" as *;
+@use "../../../styles/kosj/fonts" as *;
+
+// Component-specific styles if any, currently mostly handled by global classes
+// Page title is now handled by the global .dnd-page-title class
+
+.html-content {
+  width: 100%;
+  font-family: $font-georgia;
+  font-size: 1.15rem;
+  line-height: 1.7;
+  color: $parchment-text;
+  text-align: justify;
+  position: relative;
+  z-index: 2;
+
+  p { margin-bottom: 1.5rem; }
+
+  .table-wrapper {
+    overflow-x: auto;
+    margin-bottom: 2.5rem;
+    border: 1px solid rgba(139, 69, 19, 0.3);
+    border-radius: 4px;
+  }
+
+  .monk-progression {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+    background: rgba(255, 255, 255, 0.2);
+
+    th, td {
+      padding: 0.6rem;
+      border: 1px solid rgba(139, 69, 19, 0.2);
+      text-align: center;
+    }
+
+    th {
+      background: rgba(139, 69, 19, 0.1);
+      font-family: $font-fancy;
+      color: $parchment-accent;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+    }
+
+    tr:nth-child(even) { background: rgba(139, 69, 19, 0.05); }
+    
+    td:last-child {
+      text-align: left;
+      font-size: 0.8rem;
+    }
+  }
+
+  .toggle-container {
+    display: flex;
+    justify-content: center;
+    margin: 2.5rem 0 1.5rem;
+
+    .toggle-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      background: rgba(139, 69, 19, 0.1);
+      padding: 10px 20px;
+      border-radius: 30px;
+      border: 1px solid rgba(139, 69, 19, 0.2);
+      box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
+
+      .toggle-label {
+        font-family: $font-fancy;
+        font-size: 0.85rem;
+        font-weight: bold;
+        color: $parchment-accent;
+        opacity: 0.5;
+        transition: all 0.3s;
+
+        &.active {
+          opacity: 1;
+          color: $parchment-text;
+          text-shadow: 0 0 1px rgba(0,0,0,0.2);
+        }
+      }
+    }
+  }
+
+  /* Switch Style */
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 26px;
+
+    input { opacity: 0; width: 0; height: 0; }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: #d2b48c;
+      transition: .4s;
+      border-radius: 34px;
+      border: 2px solid $parchment-accent;
+
+      &:before {
+        position: absolute;
+        content: "";
+        height: 18px; width: 18px;
+        left: 2px; bottom: 2px;
+        background-color: $parchment-accent;
+        transition: .4s;
+        border-radius: 50%;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+      }
+    }
+
+    input:checked + .slider {
+      background-color: $primary-color;
+      border-color: $parchment-header;
+      &:before { background-color: $parchment-header; }
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(24px);
+    }
+  }
+
+  .lore-box {
+    background: rgba(255, 255, 255, 0.3);
+    border: 2px solid rgba(139, 69, 19, 0.15);
+    border-radius: 8px;
+    padding: 2rem;
+    margin-bottom: 3rem;
+    box-shadow: inset 0 0 15px rgba(139, 69, 19, 0.05);
+    position: relative;
+
+    &::before {
+      content: '❧';
+      position: absolute;
+      top: 10px; right: 15px;
+      font-size: 1.5rem;
+      color: rgba(139, 69, 19, 0.2);
+    }
+
+    h3:first-of-type { margin-top: 0; }
+  }
+
+  blockquote {
+    border-left: 3px solid $parchment-accent;
+    margin: 1.5rem 0 2rem 2rem;
+    padding: 0.5rem 0 0.5rem 1.5rem;
+    font-style: italic;
+    color: $parchment-header;
+    background: rgba(139, 69, 19, 0.05);
+  }
+
+  h3 {
+    font-family: $font-fancy;
+    color: $parchment-accent;
+    font-size: 1.8rem;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid rgba(139, 69, 19, 0.3);
+  }
+
+  hr {
+    border: none;
+    height: 1px;
+    background: rgba(139, 69, 19, 0.3);
+    margin: 3rem 0;
+  }
+
+  .lvl-badge {
+    background: $parchment-text;
+    color: #f4e4bc;
+    display: inline-block;
+    padding: 0.3rem 1rem;
+    font-family: $font-fancy;
+    font-weight: bold;
+    border-radius: 20px;
+    margin: 2rem 0 1rem;
+    font-size: 0.9rem;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+  }
+
+  .feature-card {
+    background: rgba(255, 255, 255, 0.4);
+    border: 1px solid rgba(139, 69, 19, 0.2);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+
+    &.class-feature {
+      border-left: 5px solid $primary-color;
+      h4 { color: darken($primary-color, 20%); }
+    }
+
+    &.subclass-feature {
+      border-left: 5px solid $secondary-color;
+      background: rgba($secondary-color, 0.05);
+      h4 { color: $secondary-color; }
+    }
+
+    h4 {
+      margin-top: 0;
+      font-family: $font-fancy;
+      font-size: 1.3rem;
+      margin-bottom: 1rem;
+    }
+
+
+    ul {
+      padding-left: 1.2rem;
+      margin-bottom: 0;
+      li { margin-bottom: 0.5rem; }
+    }
+  }
+
+  .fade-in {
+    animation: fadeIn 0.5s ease-out;
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  // Minor adjustments for mobile content
+  .html-content {
+    font-size: 1.05rem;
+    h3 { font-size: 1.5rem; }
+  }
+  .feature-card { padding: 1rem; }
+}

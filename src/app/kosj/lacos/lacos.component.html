@@ -1,0 +1,94 @@
+<div class="dnd-page-container">
+  <nav class="dnd-header-nav">
+    <a routerLink="/kosj" class="dnd-back-button">← Voltar para Home</a>
+  </nav>
+
+  <header class="dnd-page-title-container">
+    <h1 class="dnd-page-title">Laços de Kosj</h1>
+  </header>
+
+  <div class="grupos-grid">
+    <div *ngFor="let grupo of grupos" class="grupo-section">
+      <h2 class="grupo-title">{{ grupo.titulo }}</h2>
+      <div class="personagens-list">
+        <div 
+          class="personagem-card" 
+          *ngFor="let p of grupo.personagens"
+          (click)="openModal(p)">
+          <div class="image-container">
+            <div class="image-wrapper">
+              <img [src]="p.foto || 'assets/lacos/Indisponivel.png'" [alt]="p.nome" class="personagem-foto">
+              <div class="corner-ornament top-left"></div>
+              <div class="corner-ornament top-right"></div>
+              <div class="corner-ornament bottom-left"></div>
+              <div class="corner-ornament bottom-right"></div>
+            </div>
+          </div>
+          <div class="card-content">
+            <h3 class="personagem-name">{{ p.nome }}</h3>
+            <p class="personagem-laco">{{ p.laco }}</p>
+            <div class="nickname-box">
+              <span class="nickname-label">Kosj o chama de:</span>
+              <div class="nickname-wrapper">
+                <span class="nickname-value">
+                  "{{ p.apelidos[p.currentApelidoIndex] }}"
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Detalhes do Personagem -->
+  <div class="modal-backdrop" *ngIf="showModal" (click)="closeModal()">
+    <div class="modal-scroll" (click)="$event.stopPropagation()" [class.open]="showModal">
+      <button class="close-btn" (click)="closeModal()">×</button>
+      
+      <div class="modal-content" *ngIf="selectedPersonagem">
+        <!-- Coluna Esquerda: Identidade -->
+        <div class="identity-column">
+          <div class="modal-image-container">
+            <div class="modal-image-wrapper">
+              <img [src]="selectedPersonagem.foto || 'assets/lacos/Indisponivel.png'" [alt]="selectedPersonagem.nome">
+              <div class="corner-ornament top-left"></div>
+              <div class="corner-ornament top-right"></div>
+              <div class="corner-ornament bottom-left"></div>
+              <div class="corner-ornament bottom-right"></div>
+            </div>
+          </div>
+          <h2 class="modal-char-name">{{ selectedPersonagem.nome }}</h2>
+          <div class="name-underline"></div>
+        </div>
+
+        <!-- Coluna Direita: Informações -->
+        <div class="info-column">
+          <div class="info-section">
+            <h3 class="section-label">Vínculo</h3>
+            <p class="section-value highlight">{{ selectedPersonagem.laco }}</p>
+          </div>
+
+          <div class="info-section">
+            <h3 class="section-label">Apelidos</h3>
+            <div class="nicknames-list">
+              <span *ngFor="let a of selectedPersonagem.apelidos" class="nickname-tag">{{ a }}</span>
+            </div>
+          </div>
+
+          <div class="info-section">
+            <h3 class="section-label">Conhecido desde</h3>
+            <p class="section-value">Kosj tinha {{ selectedPersonagem.idadeConheceu }} anos</p>
+          </div>
+
+          <div class="info-section history-section">
+            <h3 class="section-label">Nossa História</h3>
+            <div class="history-text">
+              <p>{{ selectedPersonagem.historia }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

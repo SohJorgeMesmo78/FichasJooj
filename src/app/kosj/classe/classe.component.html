@@ -1,0 +1,284 @@
+<div class="dnd-page-container">
+  <nav class="dnd-header-nav">
+    <a routerLink="/kosj" class="dnd-back-button">← Voltar para Home</a>
+  </nav>
+
+  <div class="dnd-parchment-frame">
+    <h1 class="dnd-page-title">Monge</h1>
+
+    <div class="chapter-content html-content">
+      <div class="table-wrapper">
+        <table class="dnd-table monk-progression">
+          <thead>
+            <tr>
+              <th>Nível</th>
+              <th>Bônus de Proficiência</th>
+              <th>Artes Marciais</th>
+              <th>Pontos de Chi</th>
+              <th>Deslocamento sem Armadura</th>
+              <th>Características</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>1°</td><td>+2</td><td>1d4</td><td>—</td><td>—</td><td>Defesa sem Armadura, Artes Marciais</td></tr>
+            <tr><td>2°</td><td>+2</td><td>1d4</td><td>2</td><td>+3m</td><td>Chi, Movimento sem Armadura</td></tr>
+            <tr><td>3°</td><td>+2</td><td>1d4</td><td>3</td><td>+3m</td><td>Tradição Monástica, Defletir Projéteis</td></tr>
+            <tr><td>4°</td><td>+2</td><td>1d4</td><td>4</td><td>+3m</td><td>Incremento no Valor de Habilidade, Queda Lenta</td></tr>
+            <tr><td>5°</td><td>+3</td><td>1d6</td><td>5</td><td>+3m</td><td>Ataque Extra, Ataque Atordoante</td></tr>
+            <tr><td>6°</td><td>+3</td><td>1d6</td><td>6</td><td>+4,5m</td><td>Golpes de Chi, Característica de Tradição Monástica</td></tr>
+            <tr><td>7°</td><td>+3</td><td>1d6</td><td>7</td><td>+4,5m</td><td>Evasão, Mente Tranquila</td></tr>
+            <tr><td>8°</td><td>+3</td><td>1d6</td><td>8</td><td>+4,5m</td><td>Incremento no Valor de Habilidade</td></tr>
+            <tr><td>9°</td><td>+4</td><td>1d6</td><td>9</td><td>+4,5m</td><td>Aprimoramento de Movimento sem Armadura</td></tr>
+            <tr><td>10°</td><td>+4</td><td>1d6</td><td>10</td><td>+6m</td><td>Pureza Corporal</td></tr>
+            <tr><td>11°</td><td>+4</td><td>1d8</td><td>11</td><td>+6m</td><td>Característica de Tradição Monástica</td></tr>
+            <tr><td>12°</td><td>+4</td><td>1d8</td><td>12</td><td>+6m</td><td>Incremento no Valor de Habilidade</td></tr>
+            <tr><td>13°</td><td>+5</td><td>1d8</td><td>13</td><td>+6m</td><td>Idiomas do Sol e da Lua</td></tr>
+            <tr><td>14°</td><td>+5</td><td>1d8</td><td>14</td><td>+7,5m</td><td>Alma de Diamante</td></tr>
+            <tr><td>15°</td><td>+5</td><td>1d8</td><td>15</td><td>+7,5m</td><td>Corpo Atemporal</td></tr>
+            <tr><td>16°</td><td>+5</td><td>1d8</td><td>16</td><td>+7,5m</td><td>Incremento no Valor de Habilidade</td></tr>
+            <tr><td>17°</td><td>+6</td><td>1d10</td><td>17</td><td>+7,5m</td><td>Característica de Tradição Monástica</td></tr>
+            <tr><td>18°</td><td>+6</td><td>1d10</td><td>18</td><td>+9m</td><td>Corpo Vazio</td></tr>
+            <tr><td>19°</td><td>+6</td><td>1d10</td><td>19</td><td>+9m</td><td>Incremento no Valor de Habilidade</td></tr>
+            <tr><td>20°</td><td>+6</td><td>1d10</td><td>20</td><td>+9m</td><td>Auto Aperfeiçoamento</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>Seus punhos criam um borrão enquanto defletem uma revoada de flechas que vem vindo, uma meio-elfa corre sobre uma barricada e se arremessa nas maciças fileiras de hobgoblins do outro lado. Ela gira entre eles, distribuindo seus golpes e enviando-os para o chão, até que, finalmente, apenas ela está de pé.</p>
+      
+      <p>Qualquer que seja suas disciplinas, os monges partilha de sua habilidade de aproveitar magicamente da energia que flui em seus corpos. Se canalizada como um exibição impressionante de maestria do combate, ou como um foco mais sutil de habilidade defensiva e velocidade, essa energia infunde tudo que um monge faz.</p>
+
+      <div class="toggle-container">
+        <div class="toggle-wrapper">
+          <span class="toggle-label" [class.active]="!showSubclass">Monge</span>
+          <label class="switch">
+            <input type="checkbox" [checked]="showSubclass" (change)="toggleSubclass()">
+            <span class="slider"></span>
+          </label>
+          <span class="toggle-label" [class.active]="showSubclass">Forma Astral</span>
+        </div>
+      </div>
+
+      <div class="lore-box">
+        <!-- Lore Classe -->
+        <div *ngIf="!showSubclass" class="fade-in">
+          <h3>A Magia do Chi</h3>
+          <p>Monges fazem estudos cuidadosos da energia mágica que a maioria das tradições monásticas chama de chi. Essa energia é um elemento da mágica que inunda o multiverso – especificamente, os elementos que fluem através dos corpos vivos. Os monges atrelam esse poder dentro de si mesmos para criar efeitos mágicos e exceder a capacidade física de seus corpos.</p>
+
+          <h3>Treinamento e Asceticismo</h3>
+          <p>Pequenos mosteiros murados se espalham pelas paisagens dos mundos de D&D, minúsculos refúgios do fluxo da vida comum, onde o tempo parece parar. Os monges que vivem ai, buscam pelo auto aperfeiçoamento através de contemplação e treino rigoroso.</p>
+        </div>
+
+        <!-- Lore Subclasse -->
+        <div *ngIf="showSubclass" class="fade-in subclass-lore">
+          <h3>Caminho da Forma Astral</h3>
+          <blockquote>
+            "Lembrete: criar uma magia que permita socar as pessoas com o seu fantasma."
+            <br><strong>- Tasha</strong>
+          </blockquote>
+          <p>Um monge que segue o Caminho da Forma Astral acredita que seu corpo é uma ilusão. Eles enxergam seu ki como a representação de sua forma verdadeira, sua forma astral. Essa forma astral possui a capacidade de ser uma força da ordem ou da desordem.</p>
+        </div>
+      </div>
+
+      <hr>
+
+      <h3>Características de Classe / Subclasse</h3>
+
+      <div class="features-list">
+        <!-- Nível 0 (Setup) -->
+        <div class="feature-card class-feature">
+          <h4>Pontos de Vida</h4>
+          <p><strong>Dado de Vida:</strong> 1d8 por nível de monge</p>
+          <p><strong>Pontos no 1° Nível:</strong> 8 + mod Constituição</p>
+          <p><strong>Níveis Seguintes:</strong> 1d8 (ou 5) + mod Constituição</p>
+        </div>
+
+        <div class="feature-card class-feature">
+          <h4>Proficiências</h4>
+          <p><strong>Armaduras:</strong> Nenhuma</p>
+          <p><strong>Armas:</strong> Armas simples, espadas curtas</p>
+          <p><strong>Salvaguardas:</strong> Força, Destreza</p>
+          <p><strong>Perícias:</strong> Escolha duas dentre Acrobacia, Atletismo, Furtividade, História, Intuição e Religião</p>
+        </div>
+
+        <div class="feature-card subclass-feature">
+          <h4>Aparência da sua Forma Astral</h4>
+          <p>A forma astral é uma personificação translúcida da alma do monge. Ela pode refletir aspectos de seus antecedentes, ideais, vínculos e defeitos. Cada forma astral é única, podendo lembrar um minotauro para representar força ou ter semblantes delicados para representar beleza gentil.</p>
+        </div>
+
+        <!-- Nível 1 -->
+        <div class="lvl-badge">Nível 1</div>
+        <div class="feature-card class-feature">
+          <h4>Defesa sem Armadura</h4>
+          <p>A partir do 1° nível, quando você não estiver vestindo nenhuma armadura nem empunhando um escudo, sua Classe de Armadura será 10 + seu modificador de Destreza + seu modificador de Sabedoria.</p>
+        </div>
+
+        <div class="feature-card class-feature">
+          <h4>Artes Marciais</h4>
+          <p>Você ganha os seguintes benefícios enquanto estiver desarmado ou empunhando uma arma de monge:</p>
+          <ul>
+            <li>Pode usar Destreza no lugar de Força para ataques e dano.</li>
+            <li>Pode rolar um d4 (que aumenta com o nível) no lugar do dano normal.</li>
+            <li>Após atacar no seu turno, pode realizar um golpe desarmado com uma ação bônus.</li>
+          </ul>
+        </div>
+
+        <!-- Nível 2 -->
+        <div class="lvl-badge">Nível 2</div>
+        <div class="feature-card class-feature">
+          <h4>Chi</h4>
+          <p>Você pode gastar pontos de Chi para ativar diversas habilidades. Você conhece:</p>
+          <ul>
+            <li><strong>Rajada de Golpes:</strong> 1 pt para dois golpes desarmados como ação bônus.</li>
+            <li><strong>Defesa Paciente:</strong> 1 pt para Esquivar como ação bônus.</li>
+            <li><strong>Passo do Vento:</strong> 1 pt para Desengajar/Disparada como ação bônus e dobra distância de salto.</li>
+          </ul>
+          <p><strong>CD =</strong> 8 + bônus de proficiência + mod Sabedoria</p>
+        </div>
+
+        <div class="feature-card class-feature">
+          <h4>Movimento sem Armadura</h4>
+          <p>Seu deslocamento aumenta em 3 metros enquanto você não estiver usando armadura nem empunhando um escudo.</p>
+        </div>
+
+        <!-- Nível 3 -->
+        <div class="lvl-badge">Nível 3</div>
+        <div class="feature-card subclass-feature">
+          <h4>Braços da Forma Astral</h4>
+          <p>Como uma ação bônus, gaste 1 ponto de ki para invocar braços espectrais por 10 min. Criaturas a até 3m devem passar em salvaguarda de DES ou sofrer dano de energia (2 dados de Artes Marciais).</p>
+          <ul>
+            <li>Use Sabedoria para testes e salvaguardas de Força.</li>
+            <li>Alcance aumentado em 1,5m para ataques desarmados.</li>
+            <li>Ataques desarmados podem usar Sabedoria para ataque/dano e causam dano de energia.</li>
+          </ul>
+        </div>
+
+        <div class="feature-card class-feature">
+          <h4>Tradição Monástica</h4>
+          <p>Você ingressa numa tradição monástica que concede características no 3°, 6°, 11° e 17° níveis.</p>
+        </div>
+
+        <div class="feature-card class-feature">
+          <h4>Defletir Projéteis</h4>
+          <p>Use sua reação para reduzir o dano de um projétil em 1d10 + mod DEST + nível de monge. Se reduzir a 0, pode pegar o projétil e, gastando 1 pt de chi, arremessá-lo de volta.</p>
+        </div>
+
+        <!-- Nível 4 -->
+        <div class="lvl-badge">Nível 4</div>
+        <div class="feature-card class-feature">
+          <h4>Queda Lenta</h4>
+          <p>Use sua reação ao cair para reduzir o dano de queda por um valor igual a 5x seu nível de monge.</p>
+        </div>
+
+        <!-- Nível 5 -->
+        <div class="lvl-badge">Nível 5</div>
+        <div class="feature-card class-feature">
+          <h4>Ataque Extra</h4>
+          <p>Você pode atacar duas vezes, ao invés de uma, sempre que realizar a ação de Ataque no seu turno.</p>
+        </div>
+
+        <div class="feature-card class-feature">
+          <h4>Ataque Atordoante</h4>
+          <p>Ao atingir com ataque corpo-a-corpo, gaste 1 pt de chi. O alvo deve passar em salvaguarda de CON ou ficará atordoado até o final do seu próximo turno.</p>
+        </div>
+
+        <!-- Nível 6 -->
+        <div class="lvl-badge">Nível 6</div>
+        <div class="feature-card subclass-feature">
+          <h4>Semblante da Forma Astral</h4>
+          <p>Como ação bônus (ou junto com os Braços), gaste 1 pt de ki por 10 min. Benefícios:</p>
+          <ul>
+            <li><strong>Visão Astral:</strong> Enxerga na escuridão (mágica ou não) até 36m.</li>
+            <li><strong>Sabedoria espiritual:</strong> Vantagem em Intuição e Intimidação.</li>
+            <li><strong>Palavra espiritual:</strong> Direcione fala a uma criatura a 18m ou amplifique voz para 180m.</li>
+          </ul>
+        </div>
+
+        <div class="feature-card class-feature">
+          <h4>Golpes de Chi</h4>
+          <p>Seus golpes desarmados contam como armas mágicas para ultrapassar resistências.</p>
+        </div>
+
+        <!-- Nível 7 -->
+        <div class="lvl-badge">Nível 7</div>
+        <div class="feature-card class-feature">
+          <h4>Evasão / Mente Tranquila</h4>
+          <p><strong>Evasão:</strong> Metade do dano em falha de DEST e nenhum em sucesso.</p>
+          <p><strong>Mente Tranquila:</strong> Use ação para terminar efeito de enfeitiçado ou amedrontado.</p>
+        </div>
+
+        <!-- Nível 9 -->
+        <div class="lvl-badge">Nível 9</div>
+        <div class="feature-card class-feature">
+          <h4>Aprimoramento de Movimento sem Armadura</h4>
+          <p>Você ganha a habilidade de se mover através de superfícies verticais e sobre líquidos sem cair durante o movimento.</p>
+        </div>
+
+        <!-- Nível 10 -->
+        <div class="lvl-badge">Nível 10</div>
+        <div class="feature-card class-feature">
+          <h4>Pureza Corporal</h4>
+          <p>Você se torna imune a doenças e venenos.</p>
+        </div>
+
+        <!-- Nível 11 -->
+        <div class="lvl-badge">Nível 11</div>
+        <div class="feature-card subclass-feature">
+          <h4>Corpo Astral</h4>
+          <p>Com braços e semblante ativos, o corpo astral aparece. Benefícios:</p>
+          <ul>
+            <li><strong>Defletir energia:</strong> Reação para reduzir dano elemental/energia em 1d10 + mod SAB.</li>
+            <li><strong>Braços aprimorados:</strong> Uma vez por turno, causa dano extra igual ao dado de Artes Marciais ao acertar com os Braços.</li>
+          </ul>
+        </div>
+
+        <!-- Nível 13 -->
+        <div class="lvl-badge">Nível 13</div>
+        <div class="feature-card class-feature">
+          <h4>Idiomas do Sol e da Lua</h4>
+          <p>Você compreende todos os idiomas falados e qualquer criatura que entenda um idioma compreende sua fala.</p>
+        </div>
+
+        <!-- Nível 14 -->
+        <div class="lvl-badge">Nível 14</div>
+        <div class="feature-card class-feature">
+          <h4>Alma de Diamante</h4>
+          <p>Proficiência em todas as salvaguardas. Pode gastar 1 pt de chi para rejogar um teste de resistência falho.</p>
+        </div>
+
+        <!-- Nível 15 -->
+        <div class="lvl-badge">Nível 15</div>
+        <div class="feature-card class-feature">
+          <h4>Corpo Atemporal</h4>
+          <p>Não sofre efeitos da velhice, não envelhece magicamente e não precisa de comida ou água.</p>
+        </div>
+
+        <!-- Nível 17 -->
+        <div class="lvl-badge">Nível 17</div>
+        <div class="feature-card subclass-feature">
+          <h4>Forma Astral Desperta</h4>
+          <p>Gaste 5 pt de ki por 10 min. Benefícios:</p>
+          <ul>
+            <li><strong>Armadura espiritual:</strong> +2 na CA.</li>
+            <li><strong>Barreira astral:</strong> Pode atacar 3 vezes com Ataque Extra se usar os braços da forma astral.</li>
+          </ul>
+        </div>
+
+        <!-- Nível 18 -->
+        <div class="lvl-badge">Nível 18</div>
+        <div class="feature-card class-feature">
+          <h4>Corpo Vazio</h4>
+          <p>Gaste 4 pt de chi para ficar invisível por 1 min e ter resistência a quase todo dano. Por 8 pts pode usar <i>projeção astral</i>.</p>
+        </div>
+
+        <!-- Nível 20 -->
+        <div class="lvl-badge">Nível 20</div>
+        <div class="feature-card class-feature">
+          <h4>Auto Aperfeiçoamento</h4>
+          <p>Recupera 4 pt de chi se rolar iniciativa sem nenhum ponto restante.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
