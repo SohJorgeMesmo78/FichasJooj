@@ -30,6 +30,7 @@ interface Character {
   tracos_personalidade: any[];
   tracos_raciais: any[];
   tracos_subclasse: any;
+  talentos?: any[];
 }
 
 @Component({
@@ -37,7 +38,7 @@ interface Character {
   standalone: true,
   imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './ficha.component.html',
-  styleUrl: './ficha.component.scss'
+  styleUrl: './ficha.component.scss',
 })
 export class FichaComponent implements OnInit {
   character = characterData as any;
@@ -47,7 +48,7 @@ export class FichaComponent implements OnInit {
   initiative = 0;
   atributosArray: any[] = [];
   periciasCalculadas: any[] = [];
-  
+
   // Abas
   activeTab: 'ficha' | 'combate' | 'tracos' = 'ficha';
 
@@ -57,19 +58,19 @@ export class FichaComponent implements OnInit {
   hpTemp = 0;
   hpInput: number = 0;
 
-  // Recursos (Bruxo nível 3 = 2 slots)
+  // Recursos (Bruxo nível 4 = 2 slots)
   spellSlotsMax = 2;
   spellSlotsAtual = 2;
 
   // Dados de Vida (D8)
   hitDiceMax = 0;
   hitDiceAtual = 0;
-  
+
   // Transe Eladrin
   currentSeason = 'primavera';
   tranceProf1 = 'Escudo';
-  tranceProf2 = 'Flauta';
-  
+  tranceProf2 = 'Armadura Média';
+
   // Passo Feérico
   feyStepMax = 0;
   feyStepAtual = 0;
@@ -78,7 +79,7 @@ export class FichaComponent implements OnInit {
   showShortRestModal = false;
   hitDiceToSpend = 1;
   shortRestHealRolled = 0;
-  
+
   showLongRestModal = false;
   tempSeason = 'primavera';
   tempProf1 = '';
@@ -110,31 +111,37 @@ export class FichaComponent implements OnInit {
     { nome: 'Persuasão', attr: 'CAR' },
     { nome: 'Prestidigitação', attr: 'DEX' },
     { nome: 'Religião', attr: 'INT' },
-    { nome: 'Sobrevivencia', attr: 'SAB' }
+    { nome: 'Sobrevivencia', attr: 'SAB' },
   ];
 
   isItemEquipped(nome: string): boolean {
-    if (!this.character || !this.character.inventario || !this.character.inventario.itens) {
+    if (
+      !this.character ||
+      !this.character.inventario ||
+      !this.character.inventario.itens
+    ) {
       return false;
     }
-    const item = this.character.inventario.itens.find((i: any) => i.nome === nome);
+    const item = this.character.inventario.itens.find(
+      (i: any) => i.nome === nome,
+    );
     return item ? !!item.equipado : false;
   }
 
   get calculatedCA(): number {
     let baseCA = 10;
     const dexMod = this.getModifier(this.character.atributos.DEX);
-    
+
     if (this.isItemEquipped('Armadura de Couro Batido')) {
       baseCA = 12;
     }
-    
+
     let totalCA = baseCA + dexMod;
-    
+
     if (this.isItemEquipped('Escudo')) {
       totalCA += 2;
     }
-    
+
     return totalCA;
   }
 
@@ -150,26 +157,35 @@ export class FichaComponent implements OnInit {
 
     const modCon = this.getModifier(this.character.atributos.CON);
     const modCar = this.getModifier(this.character.atributos.CAR);
-    
-    this.hpMax = 8 + modCon + ((5 + modCon) * (this.character.nivel - 1));
+
+    this.hpMax = 8 + modCon + (5 + modCon) * (this.character.nivel - 1);
     this.hpAtual = this.hpMax;
 
     this.hitDiceMax = this.character.nivel;
     this.hitDiceAtual = this.hitDiceMax;
-    
+
     // Passo Feérico usa = bônus proficiência
     this.feyStepMax = this.profBonus;
     this.feyStepAtual = this.feyStepMax;
 
-    const attrKeys: (keyof Atributos)[] = ['FOR', 'DEX', 'CON', 'INT', 'SAB', 'CAR'];
-    this.atributosArray = attrKeys.map(key => ({
+    const attrKeys: (keyof Atributos)[] = [
+      'FOR',
+      'DEX',
+      'CON',
+      'INT',
+      'SAB',
+      'CAR',
+    ];
+    this.atributosArray = attrKeys.map((key) => ({
       name: key,
       score: this.character.atributos[key],
-      mod: this.getModifier(this.character.atributos[key])
+      mod: this.getModifier(this.character.atributos[key]),
     }));
-    
-    this.periciasCalculadas = this.todasPericias.map(p => {
-      const isProficient = this.character.pericias_proficientes.includes(p.nome);
+
+    this.periciasCalculadas = this.todasPericias.map((p) => {
+      const isProficient = this.character.pericias_proficientes.includes(
+        p.nome,
+      );
       const attrValue = (this.character.atributos as any)[p.attr];
       const attrMod = this.getModifier(attrValue);
       const finalBonus = isProficient ? attrMod + this.profBonus : attrMod;
@@ -177,14 +193,40 @@ export class FichaComponent implements OnInit {
     });
 
     // Injetar os valores no Raio Místico dinamicamente
-    const raioMistico = this.character.magias.nivel_0.find((m: any) => m.nome === 'Raio místico');
+    const raioMistico = this.character.magias.nivel_0.find(
+      (m: any) => m.nome === 'Raio místico',
+    );
     if (raioMistico) {
       // Remover qualquer injeção anterior se houver recarregamento
-      const baseDesc = raioMistico.descricao.split('\n\n**Explosão Agonizante')[0];
-      raioMistico.descricao = baseDesc + `\n\n**Explosão Agonizante:** Você adiciona seu Modificador de Carisma (+${modCar}) ao dano. Dano total por acerto: 1d10+${modCar} de Energia.`;
+      const baseDesc = raioMistico.descricao.split(
+        '\n\n**Explosão Agonizante',
+      )[0];
+      raioMistico.descricao =
+        baseDesc +
+        `\n\n**Explosão Agonizante:** Você adiciona seu Modificador de Carisma (+${modCar}) ao dano. Dano total por acerto: 1d10+${modCar} de Energia.`;
     }
 
     this.applyTheme();
+  }
+
+  get passivePerception(): number {
+    const isProficient = this.character.pericias_proficientes.includes('Percepção');
+    const sabMod = this.getModifier(this.character.atributos.SAB);
+    const hasObservant = this.character.talentos?.some((t: any) => t.nome.toLowerCase() === 'observador') || false;
+    const bonus = isProficient ? this.profBonus : 0;
+    const observantBonus = hasObservant ? 5 : 0;
+    return 10 + sabMod + bonus + observantBonus;
+  }
+
+  get passivePerceptionFormula(): string {
+    const isProficient = this.character.pericias_proficientes.includes('Percepção');
+    const sabMod = this.getModifier(this.character.atributos.SAB);
+    const hasObservant = this.character.talentos?.some((t: any) => t.nome.toLowerCase() === 'observador') || false;
+    
+    const profPart = isProficient ? ` + ${this.profBonus}(prof)` : '';
+    const observantPart = hasObservant ? ` + 5(Talento Observador)` : '';
+    
+    return `10 + ${sabMod}(SAB)${profPart}${observantPart}`;
   }
 
   getModifier(score: number): number {
@@ -201,11 +243,16 @@ export class FichaComponent implements OnInit {
 
   get seasonName() {
     switch (this.currentSeason) {
-      case 'primavera': return 'Primavera';
-      case 'verao': return 'Verão';
-      case 'outono': return 'Outono';
-      case 'inverno': return 'Inverno';
-      default: return 'Primavera';
+      case 'primavera':
+        return 'Primavera';
+      case 'verao':
+        return 'Verão';
+      case 'outono':
+        return 'Outono';
+      case 'inverno':
+        return 'Inverno';
+      default:
+        return 'Primavera';
     }
   }
 
@@ -220,10 +267,10 @@ export class FichaComponent implements OnInit {
   }
 
   // --- Lógica de Combate ---
-  
+
   aplicarDano() {
     if (!this.hpInput || this.hpInput <= 0) return;
-    
+
     let danoRestante = this.hpInput;
 
     if (this.hpTemp > 0) {
@@ -240,7 +287,7 @@ export class FichaComponent implements OnInit {
       this.hpAtual -= danoRestante;
       if (this.hpAtual < 0) this.hpAtual = 0;
     }
-    
+
     this.hpInput = 0;
   }
 
@@ -248,7 +295,7 @@ export class FichaComponent implements OnInit {
     if (!this.hpInput || this.hpInput <= 0) return;
 
     const curaTotal = this.hpAtual + this.hpInput;
-    
+
     if (curaTotal > this.hpMax) {
       const excesso = curaTotal - this.hpMax;
       this.hpAtual = this.hpMax;
@@ -292,11 +339,11 @@ export class FichaComponent implements OnInit {
     this.spellSlotsAtual = this.spellSlotsMax;
     this.hitDiceAtual = this.hitDiceMax;
     this.feyStepAtual = this.feyStepMax;
-    
+
     this.currentSeason = this.tempSeason;
     this.tranceProf1 = this.tempProf1 || 'Escudo';
     this.tranceProf2 = this.tempProf2 || 'Flauta';
-    
+
     this.applyTheme();
     this.fecharDescansoLongo();
   }
@@ -320,12 +367,12 @@ export class FichaComponent implements OnInit {
     }
 
     this.hitDiceAtual -= this.hitDiceToSpend;
-    
+
     if (this.shortRestHealRolled > 0) {
       this.hpInput = this.shortRestHealRolled;
       this.aplicarCura();
     }
-    
+
     this.fecharDescansoCurto();
   }
 

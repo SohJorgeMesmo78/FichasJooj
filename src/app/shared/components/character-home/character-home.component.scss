@@ -1,3 +1,16 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+/* Mapping Kosj theme variables to match Kairo's variables inside the component */
+:host-context(body.kosj-theme) {
+  --primary: var(--primary-color);
+  --bg-card: var(--card-bg);
+  --border-gold: var(--border-color);
+  --primary-glow: rgba(255, 170, 0, 0.25);
+}
+
 .home-container {
   display: flex;
   flex-direction: column;
@@ -7,7 +20,7 @@
   margin: 0 auto;
 }
 
-// 1. BACK BUTTON STYLE
+/* 1. BACK BUTTON STYLE */
 .dnd-back-button {
   font-family: var(--font-medieval, 'MedievalSharp');
   font-size: 1rem;
@@ -35,7 +48,7 @@
   }
 }
 
-// 2. AVATAR SECTION
+/* 2. AVATAR SECTION */
 .avatar-section {
   text-align: center;
   margin-bottom: 4rem;
@@ -82,7 +95,7 @@
   }
 }
 
-// 3. CARDS GRID
+/* 3. CARDS GRID */
 .cards-grid {
   display: flex;
   gap: 2rem;
@@ -185,7 +198,7 @@
 
     &:hover {
       box-shadow: 0 8px 20px rgba(0,0,0,0.6);
-      transform: none; // Don't float on hover for construction
+      transform: none; /* Don't float on hover for construction */
       border-color: var(--border-gold);
       
       .card-icon {
@@ -200,7 +213,7 @@
   }
 }
 
-// 4. SECTION DIVIDER
+/* 4. SECTION DIVIDER */
 .section-divider {
   width: 100%;
   max-width: 650px;
@@ -230,7 +243,7 @@
   }
 }
 
-// 5. MINI CARDS SECTION
+/* 5. MINI CARDS SECTION */
 .mini-cards-section {
   display: flex;
   flex-direction: row;
@@ -303,7 +316,7 @@
     border-style: dashed;
 
     &:hover {
-      transform: none; // Don't shift
+      transform: none; /* Don't shift */
       background-color: rgba(25, 40, 30, 0.4);
       border-color: var(--border-gold);
       border-left-color: var(--border-gold);

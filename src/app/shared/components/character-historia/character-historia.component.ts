@@ -1,24 +1,35 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
-import { HISTORIA_DATA, HistoriaStep } from './historia.data';
+import { RouterLink, ActivatedRoute } from '@angular/router';
+import { CharacterService, CharacterConfig } from '../../services/character.service';
 
 @Component({
-  selector: 'app-historia',
+  selector: 'app-character-historia',
   standalone: true,
   imports: [CommonModule, RouterLink],
-  templateUrl: './historia.component.html',
-  styleUrl: './historia.component.scss'
+  templateUrl: './character-historia.component.html',
+  styleUrl: './character-historia.component.scss'
 })
-export class HistoriaComponent implements OnInit, OnDestroy {
-  steps: HistoriaStep[] = HISTORIA_DATA;
+export class CharacterHistoriaComponent implements OnInit, OnDestroy {
+  config!: CharacterConfig;
+  steps: any[] = [];
   currentStepIndex = 0;
   originalBodyClass = '';
+
+  constructor(
+    private route: ActivatedRoute,
+    private charService: CharacterService
+  ) {}
 
   ngOnInit() {
     if (typeof document !== 'undefined') {
       this.originalBodyClass = document.body.className;
     }
+    
+    const characterId = this.route.snapshot.data['characterId'];
+    this.config = this.charService.getCharacterConfig(characterId);
+    this.steps = this.charService.getCharacterHistory(characterId);
+    
     this.applyTheme();
   }
 
@@ -28,13 +39,14 @@ export class HistoriaComponent implements OnInit, OnDestroy {
     }
   }
 
-  get currentStep(): HistoriaStep {
+  get currentStep(): any {
     return this.steps[this.currentStepIndex];
   }
 
   goToStep(index: number) {
     if (index >= 0 && index < this.steps.length) {
       this.currentStepIndex = index;
+      this.applyTheme();
       this.scrollToTop();
     }
   }
@@ -42,6 +54,7 @@ export class HistoriaComponent implements OnInit, OnDestroy {
   nextStep() {
     if (this.currentStepIndex < this.steps.length - 1) {
       this.currentStepIndex++;
+      this.applyTheme();
       this.scrollToTop();
     }
   }
@@ -49,13 +62,19 @@ export class HistoriaComponent implements OnInit, OnDestroy {
   previousStep() {
     if (this.currentStepIndex > 0) {
       this.currentStepIndex--;
+      this.applyTheme();
       this.scrollToTop();
     }
   }
 
   applyTheme() {
     if (typeof document !== 'undefined') {
-      document.body.className = 'kosj-theme';
+      if (this.config.id === 'kairo') {
+        const estacao = this.currentStep?.estacao || 'primavera';
+        document.body.className = `kairo-theme theme-${estacao}`;
+      } else {
+        document.body.className = this.config.themeClass;
+      }
     }
   }
 
@@ -65,4 +84,3 @@ export class HistoriaComponent implements OnInit, OnDestroy {
     }
   }
 }
-

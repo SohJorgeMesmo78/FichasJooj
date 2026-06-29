@@ -1,0 +1,56 @@
+<div class="home-container">
+  <div style="width: 100%; display: flex; justify-content: flex-start; margin-bottom: 20px;">
+    <a routerLink="/" class="dnd-back-button" style="font-size: 0.8rem; padding: 0.4rem 0.8rem;">← Escolher Personagem</a>
+  </div>
+
+  <div class="avatar-section">
+    <div class="avatar-frame">
+      <img [src]="config.avatarUrl" [alt]="config.nome" class="avatar-image">
+    </div>
+    <h1 class="character-name">{{ config.nome }}</h1>
+  </div>
+
+  <div class="cards-grid">
+    <a [routerLink]="'/' + config.id + '/historia'" class="nav-card">
+      <div class="card-icon">📜</div>
+      <div class="card-content">
+        <h2>História</h2>
+        <p>{{ config.historiaDesc }}</p>
+      </div>
+    </a>
+
+    <a [routerLink]="'/' + config.id + '/ficha'" class="nav-card">
+      <div class="card-icon">⚔️</div>
+      <div class="card-content">
+        <h2>Ficha</h2>
+        <p>{{ config.fichaDesc }}</p>
+      </div>
+    </a>
+
+    <a [routerLink]="'/' + config.id + '/lacos'" class="nav-card" [class.construction-card]="config.lacosUnderConstruction">
+      <div class="badge-em-construcao" *ngIf="config.lacosUnderConstruction">Em Construção</div>
+      <div class="card-icon">👥</div>
+      <div class="card-content">
+        <h2>Laços</h2>
+        <p>{{ config.lacosDesc }}</p>
+      </div>
+    </a>
+  </div>
+
+  <div class="section-divider">
+    <span>Informações Gerais</span>
+  </div>
+
+  <div class="mini-cards-section">
+    <a [routerLink]="config.racaLink" class="mini-card" [class.construction-mini-card]="config.racaUnderConstruction" style="text-decoration: none; display: flex; flex-direction: column; cursor: pointer;">
+      <span class="micro-badge" *ngIf="config.racaUnderConstruction">Em Construção</span>
+      <span class="mini-label">Raça</span> 
+      <span class="mini-value">{{ config.raca }}</span>
+    </a>
+    <a [routerLink]="config.classeLink" class="mini-card" [class.construction-mini-card]="config.classeUnderConstruction" style="text-decoration: none; display: flex; flex-direction: column; cursor: pointer;">
+      <span class="micro-badge" *ngIf="config.classeUnderConstruction">Em Construção</span>
+      <span class="mini-label">Classe/Subclasse</span> 
+      <span class="mini-value">{{ config.classe }}</span>
+    </a>
+  </div>
+</div>

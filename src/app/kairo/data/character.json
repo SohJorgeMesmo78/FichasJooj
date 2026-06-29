@@ -2,7 +2,7 @@
   "nome": "Kairo",
   "raca": "Eladryn",
   "classe": "Bruxo",
-  "nivel": 3,
+  "nivel": 4,
   "subclasse": "do Genio",
   "antecedente": {
     "nome": "Feylost",
@@ -12,7 +12,7 @@
     "FOR": 8,
     "DEX": 16,
     "CON": 13,
-    "INT": 13,
+    "INT": 14,
     "SAB": 14,
     "CAR": 19
   },
@@ -121,6 +121,13 @@
         "alcance": "3 metros",
         "duracao": "Até 1 hora",
         "descricao": "Você cria um efeito mágico inofensivo que os conjuradores novatos usam para praticar. Efeitos incluem faíscas, limpar/sujar um objeto, aquecer/esfriar comida ou criar uma marca."
+      },
+      {
+        "nome": "Amizade",
+        "conjuracao": "1 Ação",
+        "alcance": "Pessoal",
+        "duracao": "Concentração, até 1 minuto",
+        "descricao": "Você direciona sua magia para influenciar uma criatura que você possa ver dentro do alcance. Pela duração, você tem vantagem em todos os testes de Carisma direcionados a ela. Quando a magia acabar, a criatura percebe que você a influenciou e fica hostil em relação a você."
       }
     ],
     "nivel_1": [
@@ -160,6 +167,13 @@
         "alcance": "Pessoal",
         "duracao": "Instantânea",
         "descricao": "Você é cercado por uma névoa prateada e se teletransporta por até 9 metros para um espaço desocupado que possa ver."
+      },
+      {
+        "nome": "Sugestão",
+        "conjuracao": "1 Ação",
+        "alcance": "9 metros",
+        "duracao": "Concentração, até 8 horas",
+        "descricao": "Você sugere um curso de atividade (limitado a uma frase ou duas) e influencia magicamente uma criatura dentro do alcance que possa ouvi-lo e compreendê-lo. O alvo deve fazer uma salvaguarda de Sabedoria. Em uma falha, ela realiza a ação sugerida."
       }
     ]
   },
@@ -239,5 +253,11 @@
         "descricao": "O Gênio permite que você escolha a partir de uma lista expandida de magias quando você aprende uma magia de bruxo. A tabela de Lista Expandida de Magias do Gênio mostra as magias que são adicionadas à lista de magia de bruxo para você, bem como as magias associadas ao seu tipo de patrono: dao, djinni, ifrit ou marid."
       }
     ]
-  }
+  },
+  "talentos": [
+    {
+      "nome": "Observador",
+      "descricao": "Rápido em notar detalhes no ambiente, você ganha os seguintes benefícios:\n\n• Aumente seu valor de Inteligência ou Sabedoria em 1 (escolhido: Inteligência).\n• Se você puder ver a boca de uma criatura enquanto ela fala um idioma que você conhece, você pode ler os lábios dela.\n• Você ganha um bônus de +5 em seus testes passivos de Sabedoria (Percepção) e Inteligência (Investigação)."
+    }
+  ]
 }

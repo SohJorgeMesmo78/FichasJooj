@@ -50,6 +50,11 @@
           <span class="label">Proficiência</span>
           <span class="value">{{ formatModifier(profBonus) }}</span>
         </div>
+        <div class="shield-box full-width tooltip-container">
+          <span class="label">Percept. Passiva</span>
+          <span class="value">{{ passivePerception }}</span>
+          <span class="tooltip-text">{{ passivePerceptionFormula }}</span>
+        </div>
       </div>
 
       <!-- PAINEL DE VIDA -->
@@ -171,6 +176,15 @@
               <h3>Raça: Traços de Eladrin</h3>
               <ul class="clickable-list flex-list">
                 <li *ngFor="let t of character.tracos_raciais" (click)="abrirDetalhesTraco(t)">
+                  <span class="spell-name">{{ t.nome }}</span>
+                </li>
+              </ul>
+            </div>
+
+            <div class="dark-panel mb-4" *ngIf="character.talentos && character.talentos.length > 0">
+              <h3>Talentos</h3>
+              <ul class="clickable-list flex-list">
+                <li *ngFor="let t of character.talentos" (click)="abrirDetalhesTraco(t)">
                   <span class="spell-name">{{ t.nome }}</span>
                 </li>
               </ul>
