@@ -56,8 +56,8 @@
         "equipado": false
       },
       {
-        "nome": "Armadura de Couro Batido",
-        "descricao": "Armadura leve reforçada com cravos de metal. Altera a CA base para 12 + mod de Destreza.",
+        "nome": "Camisão de Malha",
+        "descricao": "Armadura média feita de anéis de metal interligados. Altera a CA base para 13 + mod de Destreza (máximo de +2).",
         "equipavel": true,
         "equipado": true
       },
@@ -69,7 +69,7 @@
       }
     ],
     "dinheiro": {
-      "PO": 57
+      "PO": 0
     }
   },
   "caracteristicas_magicas": {

@@ -134,6 +134,11 @@ export class FichaComponent implements OnInit {
 
     if (this.isItemEquipped('Armadura de Couro Batido')) {
       baseCA = 12;
+      return baseCA + dexMod + (this.isItemEquipped('Escudo') ? 2 : 0);
+    } else if (this.isItemEquipped('Camisão de Malha')) {
+      baseCA = 13;
+      const cappedDexMod = Math.min(dexMod, 2);
+      return baseCA + cappedDexMod + (this.isItemEquipped('Escudo') ? 2 : 0);
     }
 
     let totalCA = baseCA + dexMod;
@@ -146,9 +151,16 @@ export class FichaComponent implements OnInit {
   }
 
   get caFormula(): string {
-    const base = this.isItemEquipped('Armadura de Couro Batido') ? '12' : '10';
+    let base = '10';
+    let dexText = 'Dex';
+    if (this.isItemEquipped('Armadura de Couro Batido')) {
+      base = '12';
+    } else if (this.isItemEquipped('Camisão de Malha')) {
+      base = '13';
+      dexText = 'Dex (max 2)';
+    }
     const shield = this.isItemEquipped('Escudo') ? ' + 2' : '';
-    return `${base} + Dex${shield}`;
+    return `${base} + ${dexText}${shield}`;
   }
 
   ngOnInit() {
